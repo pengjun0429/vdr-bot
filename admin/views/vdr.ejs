@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VDR 國家管理後臺</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: #f4f2ed; color: #1e1e2a; }
+  .header { background: #0f1a2e; color: #e8d5a3; padding: 30px 24px; text-align: center; }
+  .header h1 { color: #fff; font-size: 1.5rem; }
+  .header .sub { opacity: 0.6; font-size: 0.85rem; margin-top: 4px; }
+  .container { max-width: 1000px; margin: 0 auto; padding: 24px 16px; }
+  .card { background: #fff; border-radius: 6px; padding: 20px 24px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .card h2 { font-size: 1.1rem; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid #dcc89a; color: #0f1a2e; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .stat-box { background: #f8f6f1; border-radius: 4px; padding: 14px; text-align: center; }
+  .stat-box .num { font-size: 1.5rem; font-weight: 700; color: #0f1a2e; }
+  .stat-box .label { font-size: 0.8rem; color: #888; margin-top: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th, td { border: 1px solid #e0ddd6; padding: 6px 10px; text-align: left; }
+  th { background: #0f1a2e; color: #fff; font-weight: 600; }
+  tr:nth-child(even) td { background: #faf9f6; }
+  .badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 0.75rem; background: #dcc89a; color: #0f1a2e; }
+  @media (max-width: 540px) {
+    .card { padding: 14px; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>虛境民主共和國 — 國家管理後臺</h1>
+  <div class="sub">技術發展部管理介面</div>
+</div>
+<div class="container">
+
+  <div class="card">
+    <h2>國家概覽</h2>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="num"><%= nation.citizens %></div><div class="label">公民人數</div></div>
+      <div class="stat-box"><div class="num"><%= nation.allies %></div><div class="label">邦交國</div></div>
+      <div class="stat-box"><div class="num"><%= nation.decrees %></div><div class="label">總統令</div></div>
+      <div class="stat-box"><div class="num"><%= nation.treasury %></div><div class="label">國庫（尐尐幣）</div></div>
+      <div class="stat-box"><div class="num"><%= nation.txCount %></div><div class="label">交易筆數</div></div>
+      <div class="stat-box"><div class="num"><%= nation.regions %></div><div class="label">行政區</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>公民列表</h2>
+    <% if (citizens.length === 0) { %><p style="color:#888">尚無註冊公民</p><% } %>
+    <% if (citizens.length > 0) { %>
+    <table>
+      <tr><th>Discord ID</th><th>姓名</th><th>行政區</th><th>錢包</th><th>註冊時間</th></tr>
+      <% for (const c of citizens) { %>
+      <tr>
+        <td><code><%= c.id %></code></td>
+        <td><%= c.name %></td>
+        <td><span class="badge"><%= c.region %></span></td>
+        <td><%= c.wallet %></td>
+        <td><%= new Date(c.registeredAt).toLocaleString('zh-TW') %></td>
+      </tr>
+      <% } %>
+    </table>
+    <% } %>
+  </div>
+
+  <div class="card">
+    <h2>總統令列表</h2>
+    <% if (decrees.length === 0) { %><p style="color:#888">尚無總統令</p><% } %>
+    <% if (decrees.length > 0) { %>
+    <table>
+      <tr><th>編號</th><th>標題</th><th>發布者</th><th>時間</th></tr>
+      <% for (const d of decrees) { %>
+      <tr>
+        <td>#<%= d.id %></td>
+        <td><%= d.title %></td>
+        <td><%= d.authorName %></td>
+        <td><%= new Date(d.issuedAt).toLocaleString('zh-TW') %></td>
+      </tr>
+      <% } %>
+    </table>
+    <% } %>
+  </div>
+
+  <div class="card">
+    <h2>交易紀錄</h2>
+    <% if (txs.length === 0) { %><p style="color:#888">尚無交易</p><% } %>
+    <% if (txs.length > 0) { %>
+    <table>
+      <tr><th>時間</th><th>轉出</th><th>轉入</th><th>金額</th><th>備註</th></tr>
+      <% for (const t of txs) { %>
+      <tr>
+        <td><%= new Date(t.at).toLocaleString('zh-TW') %></td>
+        <td><code><%= t.from %></code></td>
+        <td><code><%= t.to %></code></td>
+        <td><%= t.amount %></td>
+        <td><%= t.note || '-' %></td>
+      </tr>
+      <% } %>
+    </table>
+    <% } %>
+  </div>
+
+</div>
+</body>
+</html>
