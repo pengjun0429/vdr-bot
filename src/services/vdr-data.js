@@ -170,11 +170,36 @@ function transfer(fromId, toId, amount, note) {
   return { from, to, tx };
 }
 
+async function syncToSheet() {
+  const sheetUrl = process.env.VDR_SHEET_URL;
+  const sheetToken = process.env.VDR_SHEET_TOKEN;
+  if (!sheetUrl || !sheetToken) return;
+  const db = get();
+  try {
+    const axios = require('axios');
+    await axios.post(sheetUrl, {
+      token: sheetToken,
+      action: 'syncAll',
+      data: {
+        citizens: Object.entries(db.citizens).map(([userId, c]) => ({ userId, ...c })),
+        decrees: db.decrees,
+        transactions: db.economy.transactions,
+      },
+    }, { timeout: 10000 });
+    console.log('[VDR] Google Sheets 同步成功');
+  } catch (err) {
+    console.warn('[VDR] Google Sheets 同步失敗:', err.message);
+  }
+}
+
+setInterval(syncToSheet, 5 * 60 * 1000);
+
 load();
 
 module.exports = {
   load, save, get,
   registerCitizen, getCitizen,
   addDecree, transfer,
+  syncToSheet,
   defaults,
 };
