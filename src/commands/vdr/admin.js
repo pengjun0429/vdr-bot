@@ -96,6 +96,7 @@ module.exports = {
       const title = interaction.options.getString('標題');
       const content = interaction.options.getString('內容');
       const num = vdr.nextAnnounceNumber();
+      vdr.addAnnouncement(num, title, content, interaction.user.tag);
       const msg = `**【𝐕𝐃𝐑國家發展公告】**\n\n條約編號：虛外字第 ${num} 號\n＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n\n${content}\n\n＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n發布者：${interaction.user.tag}\n發布單位：技術發展部\n公告單位：虛境民主共和國總統府`;
       await interaction.reply({ content: '公告已發布', ephemeral: true });
       const channel = interaction.guild.systemChannel;
@@ -110,6 +111,7 @@ module.exports = {
         .addFields(
           { name: '公民人數', value: `${Object.keys(db.citizens).length} 人`, inline: true },
           { name: '總統令', value: `${db.decrees.length} 筆`, inline: true },
+          { name: '國家公告', value: `${db.announcements.length} 筆`, inline: true },
           { name: '交易紀錄', value: `${db.economy.transactions.length} 筆`, inline: true },
           { name: '國庫總額', value: `${db.economy.treasury} 尐尐幣`, inline: true },
           { name: '總流通量', value: `${db.economy.totalSupply} 尐尐幣`, inline: true },

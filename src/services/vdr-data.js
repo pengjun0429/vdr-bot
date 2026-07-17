@@ -21,6 +21,7 @@ const defaults = {
   },
   citizens: {},
   decrees: [],
+  announcements: [],
   allies: [
     { name: '厂万共和國', date: '2026年1月11日' },
     { name: '大鮭民主聯邦共和國' },
@@ -135,6 +136,13 @@ function nextAnnounceNumber() {
   return `${today}-${String(db.announceCount[today]).padStart(3, '0')}`;
 }
 
+function addAnnouncement(number, title, content, author) {
+  const db = get();
+  db.announcements.push({ number, title, content, author, at: new Date().toISOString() });
+  save();
+  sheetAppend('addAnnouncement', { number, title, content, author });
+}
+
 function registerCitizen(userId, data) {
   const db = get();
   db.citizens[userId] = {
@@ -205,6 +213,7 @@ async function syncToSheet() {
       data: {
         citizens: Object.entries(db.citizens).map(([userId, c]) => ({ userId, ...c })),
         decrees: db.decrees,
+        announcements: db.announcements,
         transactions: db.economy.transactions,
       },
     }, { timeout: 10000 });
@@ -222,7 +231,7 @@ module.exports = {
   load, save, get,
   registerCitizen, getCitizen,
   addDecree, transfer,
-  nextAnnounceNumber,
+  nextAnnounceNumber, addAnnouncement,
   syncToSheet,
   defaults,
 };
