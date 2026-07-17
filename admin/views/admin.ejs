@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -140,7 +140,7 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
       <form method="POST" action="/admin/decrees/create">
         <div class="form-row">
           <div class="form-group"><label>標題</label><input name="title" required></div>
-          <div class="form-group"><label>發送到頻道（選填）</label><select name="channelId"><option value="">不發送</option></select></div>
+          <div class="form-group"><label>發送到頻道（選填）</label><select name="channelId"><option value="">不發送</option><% for (const ch of channels) { %><option value="<%= ch.id %>"><%= ch.name %></option><% } %></select></div>
         </div>
         <div class="form-group"><label>內容</label><textarea name="content" rows="4" required></textarea></div>
         <button class="btn btn-gold" type="submit">📜 發布總統令</button>
@@ -172,7 +172,7 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
           <div class="form-group"><label>發布單位</label><input name="unit" placeholder="技術發展部" value="技術發展部"></div>
         </div>
         <div class="form-group"><label>內容</label><textarea name="content" rows="4" required></textarea></div>
-        <div class="form-group"><label>發送到</label><select name="channelId" required><option value="">選擇頻道</option></select></div>
+        <div class="form-group"><label>發送到</label><select name="channelId" required><option value="">-- 選擇頻道 --</option><% for (const ch of channels) { %><option value="<%= ch.id %>"><%= ch.name %></option><% } %></select></div>
         <button class="btn btn-gold" type="submit">📢 發布公告</button>
       </form>
     </div>
@@ -243,17 +243,26 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <div class="card">
       <h2>指派身分組給成員</h2>
       <form method="POST" action="/admin/roles/assign" style="display:flex;gap:8px;flex-wrap:wrap">
-        <select name="roleId" required style="flex:1;min-width:140px"><option value="">選擇身分組</option></select>
-        <input name="userId" placeholder="Discord 使用者 ID" required style="flex:1;min-width:140px">
-        <button class="btn btn-gold" type="submit" name="action" value="add">＋ 新增</button>
-        <button class="btn btn-danger" type="submit" name="action" value="remove">－ 移除</button>
-      </form>
-    </div>
-    <div class="card">
-      <h2>身分組權限層級 <span class="count">由高至低</span></h2>
-      <table id="roleTable">
-        <tr><th style="width:40px">#</th><th>名稱</th><th>ID</th><th>顏色</th><th>人數</th><th>伺服器</th></tr>
-      </table>
+         <select name="roleId" required style="flex:1;min-width:140px"><option value="">選擇身分組</option><% for (const r of roles) { %><option value="<%= r.id %>"><%= r.name %>（<%= r.guild %>）</option><% } %></select>
+         <input name="userId" placeholder="Discord 使用者 ID" required style="flex:1;min-width:140px">
+         <button class="btn btn-gold" type="submit" name="action" value="add">＋ 新增</button>
+         <button class="btn btn-danger" type="submit" name="action" value="remove">－ 移除</button>
+       </form>
+     </div>
+     <div class="card">
+       <h2>身分組權限層級 <span class="count">由高至低</span></h2>
+       <table id="roleTable">
+         <tr><th style="width:40px">#</th><th>名稱</th><th>ID</th><th>顏色</th><th>人數</th><th>伺服器</th></tr>
+         <% for (let i = 0; i < roles.length; i++) { %>
+         <tr><td style="text-align:center;font-weight:700;color:<%= i < 3 ? '#c9a84c' : '#8b826e' %>"><%= i + 1 %></td>
+           <td><span style="<%= roles[i].color ? 'color:'+roles[i].color : '' %>;font-weight:600"><%= roles[i].name %></span></td>
+           <td style="font-size:11px;color:#8b826e"><%= roles[i].id %></td>
+           <td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:<%= roles[i].color || '#999' %>;vertical-align:middle"></span></td>
+           <td><%= roles[i].count %> 人</td>
+           <td><%= roles[i].guild %></td>
+         </tr>
+         <% } %>
+       </table>
     </div>
     <% } %>
 
@@ -262,8 +271,8 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <div class="card">
       <h2>自動身分組設定</h2>
       <form method="POST" action="/admin/autorole/save">
-        <div class="form-group"><label>加入伺服器時自動給予</label><select name="joinRoleId"><option value="">不給予</option></select></div>
-        <div class="form-group"><label>註冊公民時自動給予</label><select name="citizenRoleId"><option value="">不給予</option></select></div>
+        <div class="form-group"><label>加入伺服器時自動給予</label><select name="joinRoleId"><option value="">不給予</option><% for (const r of roles) { %><option value="<%= r.id %>"><%= r.name %>(<%= r.guild %>)</option><% } %></select></div>
+        <div class="form-group"><label>註冊公民時自動給予</label><select name="citizenRoleId"><option value="">不給予</option><% for (const r of roles) { %><option value="<%= r.id %>"><%= r.name %>(<%= r.guild %>)</option><% } %></select></div>
         <button class="btn btn-gold" type="submit">💾 儲存設定</button>
       </form>
     </div>
@@ -286,10 +295,10 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
       <h2>身分組排序設定</h2>
       <form method="POST" action="/admin/roleorder/save">
         <div style="display:flex;gap:8px;margin-bottom:12px">
-          <select id="roleSelect" style="flex:1"><option value="">新增身分組</option></select>
+           <select id="roleSelect" style="flex:1"><option value="">新增身分組</option><% for (const r of roles) { %><option value="<%= r.id %>"><%= r.name %>（<%= r.guild %>）</option><% } %></select>
           <span class="btn btn-gold btn-sm" onclick="addRole()" style="cursor:pointer">＋ 新增</span>
         </div>
-        <ul id="sortable" style="list-style:none;padding:0;margin:0 0 14px 0"></ul>
+         <ul id="sortable" style="list-style:none;padding:0;margin:0 0 14px 0"><% for (const o of order) { %><% const r = roles.find(x => x.id === o.id); %><li style="display:flex;align-items:center;gap:8px;padding:6px 10px;margin:2px 0;background:#f8f6f1;border:1px solid #e0ddd6;border-radius:4px;cursor:move"><span style="cursor:grab;color:#8b826e">🦾</span><span style="flex:1"><%= r ? r.name : o.name %></span><input type="hidden" name="roleIds" value="<%= o.id %>"><span style="color:#dc2626;cursor:pointer;font-size:13px" onclick="this.parentElement.remove()">✖</span></li><% } %></ul>
         <button class="btn btn-gold" type="submit">💾 儲存排序</button>
       </form>
     </div>
@@ -301,7 +310,7 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
       <h2>歡迎訊息設定</h2>
       <form method="POST" action="/admin/welcome/save">
         <div class="form-group"><label><input type="checkbox" name="enabled" value="1" <%= welcome.enabled ? 'checked' : '' %> style="width:auto"> 啟用歡迎訊息</label></div>
-        <div class="form-group"><label>發送頻道</label><select name="channelId"><option value="">系統預設頻道</option></select></div>
+        <div class="form-group"><label>發送頻道</label><select name="channelId"><option value="">系統預設頻道</option><% for (const ch of channels) { %><option value="<%= ch.id %>"><%= ch.name %></option><% } %></select></div>
         <button class="btn btn-gold" type="submit">💾 儲存設定</button>
       </form>
     </div>
@@ -312,7 +321,7 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <div class="card">
       <h2>機器人發言</h2>
       <form method="POST" action="/admin/say/send">
-        <div class="form-group"><label>發送到</label><select name="channelId" required><option value="">選擇頻道</option></select></div>
+        <div class="form-group"><label>發送到</label><select name="channelId" required><option value="">-- 選擇頻道 --</option><% for (const ch of channels) { %><option value="<%= ch.id %>"><%= ch.name %></option><% } %></select></div>
         <div class="form-group"><label>訊息內容</label><textarea name="message" rows="5" required placeholder="輸入訊息內容..."></textarea></div>
         <button class="btn btn-gold" type="submit">📣 發送</button>
       </form>
@@ -365,3 +374,4 @@ setTimeout(() => { document.querySelectorAll('.alert').forEach(el => el.style.di
 </script>
 </body>
 </html>
+
