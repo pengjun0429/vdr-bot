@@ -81,6 +81,7 @@ function startAdmin(client) {
       const guilds = guildsRes.data;
 
       const adminUserIds = (process.env.ADMIN_USER_IDS || '').split(',').filter(Boolean);
+      const adminRoleIds = (process.env.ADMIN_ROLE_IDS || '').split(',').filter(Boolean);
       let isAdmin = adminUserIds.includes(user.id);
       if (!isAdmin) {
         for (const g of client.guilds.cache.values()) {
@@ -92,9 +93,15 @@ function startAdmin(client) {
             break;
           }
           const member = await g.members.fetch(user.id).catch(() => null);
-          if (member && (member.permissions.has(0x8n) || g.ownerId === user.id)) {
-            isAdmin = true;
-            break;
+          if (member) {
+            if (member.permissions.has(0x8n) || g.ownerId === user.id) {
+              isAdmin = true;
+              break;
+            }
+            if (adminRoleIds.length > 0 && member.roles.cache.some(r => adminRoleIds.includes(r.id))) {
+              isAdmin = true;
+              break;
+            }
           }
         }
       }
