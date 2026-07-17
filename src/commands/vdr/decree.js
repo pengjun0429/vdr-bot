@@ -5,11 +5,13 @@ module.exports = {
   category: '政府',
   data: new SlashCommandBuilder()
     .setName('vdr-decree')
-    .setDescription('發布總統令（總統專用）')
+    .setDescription('發布總統令（伺服器管理員專用）')
     .addStringOption(opt => opt.setName('標題').setDescription('總統令標題').setRequired(true))
-    .addStringOption(opt => opt.setName('內容').setDescription('總統令內容').setRequired(true))
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .addStringOption(opt => opt.setName('內容').setDescription('總統令內容').setRequired(true)),
   async execute(interaction) {
+    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator) && interaction.user.id !== interaction.guild.ownerId) {
+      return interaction.reply({ content: '只有伺服器管理員才能發布總統令', ephemeral: true });
+    }
     const title = interaction.options.getString('標題');
     const content = interaction.options.getString('內容');
     const decree = vdr.addDecree(interaction.user.id, interaction.user.tag, title, content);
