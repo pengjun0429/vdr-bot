@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= pageTitle %> | VDR 管理後臺</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Noto Sans TC',sans-serif;background:#f4f2ed;color:#1e1e2a;display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{width:220px;background:#0f1a2e;color:#e8d5a3;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar .title{padding:20px 18px;font-size:14px;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.05);letter-spacing:0.5px}
+.sidebar .title span{color:#c9a84c}
+.sidebar nav{padding:8px 0;flex:1}
+.sidebar nav a{display:flex;align-items:center;gap:8px;padding:10px 18px;color:#8b826e;text-decoration:none;font-size:13px;transition:0.12s}
+.sidebar nav a:hover{color:#e8d5a3;background:rgba(255,255,255,0.03)}
+.sidebar nav a.active{color:#e8d5a3;background:rgba(201,168,76,0.08);border-right:3px solid #c9a84c}
+.sidebar .footer{padding:14px 18px;border-top:1px solid rgba(255,255,255,0.05);font-size:11px;color:#5a5240}
+
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 28px;background:#fff;border-bottom:1px solid #e0ddd6}
+.topbar .bread{font-size:13px;color:#8b826e}
+.topbar .bread strong{color:#0f1a2e}
+.topbar .status{font-size:12px;display:flex;align-items:center;gap:4px;color:#8b826e}
+.topbar .status .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.topbar .status .dot.on{background:#22c55e}
+.content{padding:24px 28px 40px;flex:1}
+
+.card{background:#fff;border-radius:6px;padding:20px 24px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,0.04);border:1px solid #e0ddd6}
+.card h2{font-size:15px;font-weight:600;color:#0f1a2e;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #dcc89a;display:flex;align-items:center;gap:8px}
+.card h2 .count{font-size:12px;color:#8b826e;font-weight:400}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:0 0 16px}
+.stat-box{background:#fff;border:1px solid #e0ddd6;border-radius:6px;padding:16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.stat-box .num{font-size:24px;font-weight:700;color:#0f1a2e}
+.stat-box .label{font-size:10px;color:#8b826e;margin-top:2px;text-transform:uppercase;letter-spacing:0.5px}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{border:1px solid #e0ddd6;padding:6px 10px;text-align:left}
+th{background:#0f1a2e;color:#fff;font-weight:600;font-size:11px;white-space:nowrap}
+tr:nth-child(even) td{background:#faf9f6}
+.badge{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;background:#dcc89a;color:#0f1a2e}
+.empty{color:#8b826e;padding:30px;text-align:center;font-size:13px}
+
+input,select,textarea{padding:7px 10px;border:1px solid #e0ddd6;border-radius:4px;font-size:13px;outline:none;width:100%}
+input:focus,select:focus,textarea:focus{border-color:#c9a84c}
+textarea{resize:vertical;min-height:60px;font-family:inherit}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:#555;margin-bottom:3px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.btn{display:inline-flex;align-items:center;gap:4px;padding:7px 16px;border-radius:4px;font-size:12px;font-weight:600;border:none;cursor:pointer;text-decoration:none;transition:0.12s}
+.btn-gold{background:#c9a84c;color:#0f1a2e}
+.btn-gold:hover{background:#dcc060}
+.btn-sm{padding:4px 10px;font-size:11px}
+.btn-danger{background:#dc2626;color:#fff}
+.btn-danger:hover{background:#b91c1c}
+.btn-outline{background:transparent;border:1px solid #e0ddd6;color:#555}
+.btn-outline:hover{border-color:#c9a84c}
+
+.alert{padding:10px 14px;border-radius:4px;font-size:13px;margin-bottom:12px;display:none}
+.alert-success{background:#dcfce7;color:#166534;border:1px solid #bbf7d0;display:block}
+.alert-error{background:#fee2e2;color:#991b1b;border:1px solid #fecaca;display:block}
+
+.search-bar{display:flex;gap:8px;margin-bottom:12px}
+.search-bar input{flex:1}
+
+@media(max-width:768px){
+  .sidebar{width:60px}
+  .sidebar .title,.sidebar nav a span,.sidebar .footer{display:none}
+  .sidebar nav a{padding:12px;justify-content:center}
+  .content{padding:16px}
+  .form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="title">虛境<span>共和國</span></div>
+  <nav>
+    <a href="/dashboard" class="<%= page === 'dashboard' ? 'active' : '' %>">📊 <span>控制臺</span></a>
+    <a href="/admin/citizens" class="<%= page === 'citizens' ? 'active' : '' %>">👥 <span>公民管理</span></a>
+    <a href="/admin/decrees" class="<%= page === 'decrees' ? 'active' : '' %>">📜 <span>總統令</span></a>
+    <a href="/admin/announce" class="<%= page === 'announce' ? 'active' : '' %>">📢 <span>國家公告</span></a>
+    <a href="/admin/economy" class="<%= page === 'economy' ? 'active' : '' %>">💰 <span>經濟管理</span></a>
+    <a href="/admin/diplomacy" class="<%= page === 'diplomacy' ? 'active' : '' %>">🌐 <span>外交邦交</span></a>
+    <a href="/admin/servers" class="<%= page === 'servers' ? 'active' : '' %>">🖥️ <span>伺服器</span></a>
+    <a href="/admin/logs" class="<%= page === 'logs' ? 'active' : '' %>">📋 <span>系統日誌</span></a>
+  </nav>
+  <div class="footer">v<%= version %> | <a href="/logout" style="color:#8b826e;text-decoration:none">登出</a></div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div class="bread"><strong><%= pageTitle %></strong></div>
+    <div class="status"><span class="dot on"></span> 在線 · <%= ping %>ms</div>
+  </div>
+  <div class="content">
+
+    <!-- ===================== DASHBOARD ===================== -->
+    <% if (page === 'dashboard') { %>
+    <div class="stats">
+      <div class="stat-box"><div class="num"><%= d.citizens %></div><div class="label">公民</div></div>
+      <div class="stat-box"><div class="num"><%= d.decrees %></div><div class="label">總統令</div></div>
+      <div class="stat-box"><div class="num"><%= d.announcements %></div><div class="label">公告</div></div>
+      <div class="stat-box"><div class="num"><%= d.allies %></div><div class="label">邦交國</div></div>
+      <div class="stat-box"><div class="num"><%= Number(d.treasury).toLocaleString() %></div><div class="label">國庫</div></div>
+      <div class="stat-box"><div class="num"><%= d.txCount %></div><div class="label">交易</div></div>
+      <div class="stat-box"><div class="num"><%= d.servers %></div><div class="label">伺服器</div></div>
+      <div class="stat-box"><div class="num"><%= d.regions %></div><div class="label">行政區</div></div>
+    </div>
+    <div class="card">
+      <h2>最新活動</h2>
+      <% if (d.recent.length === 0) { %><div class="empty">尚無活動紀錄</div><% } %>
+      <% if (d.recent.length > 0) { %>
+      <table>
+        <tr><th>時間</th><th>類型</th><th>內容</th></tr>
+        <% for (const r of d.recent) { %>
+        <tr><td style="font-size:11px"><%= r.time %></td><td><span class="badge"><%= r.type %></span></td><td><%= r.text %></td></tr>
+        <% } %>
+      </table>
+      <% } %>
+    </div>
+    <% } %>
+
+    <!-- ===================== CITIZENS ===================== -->
+    <% if (page === 'citizens') { %>
+    <div class="card">
+      <h2>公民列表 <span class="count"><%= citizens.length %> 人</span></h2>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="搜尋名稱或ID..." onkeyup="filterTable(this.value)">
+      </div>
+      <% if (citizens.length === 0) { %><div class="empty">尚無註冊公民</div><% } %>
+      <% if (citizens.length > 0) { %>
+      <table id="dataTable">
+        <tr><th>ID</th><th>名稱</th><th>行政區</th><th>錢包</th><th>註冊時間</th></tr>
+        <% for (const c of citizens) { %>
+        <tr>
+          <td style="font-size:11px;color:#8b826e"><%= c.id %></td>
+          <td><strong><%= c.name %></strong></td>
+          <td><span class="badge"><%= c.region %></span></td>
+          <td><%= c.wallet %></td>
+          <td style="font-size:11px"><%= new Date(c.registeredAt).toLocaleString('zh-TW') %></td>
+        </tr>
+        <% } %>
+      </table>
+      <% } %>
+    </div>
+    <% } %>
+
+    <!-- ===================== DECREES ===================== -->
+    <% if (page === 'decrees') { %>
+    <div class="card">
+      <h2>總統令列表 <span class="count"><%= decrees.length %> 筆</span></h2>
+      <% if (decrees.length === 0) { %><div class="empty">尚無總統令</div><% } %>
+      <% if (decrees.length > 0) { %>
+      <table>
+        <tr><th>#</th><th>標題</th><th>發布者</th><th>時間</th></tr>
+        <% for (const d of decrees) { %>
+        <tr><td><%= d.id %></td><td><strong><%= d.title %></strong></td><td><%= d.authorName %></td><td style="font-size:11px"><%= new Date(d.issuedAt).toLocaleString('zh-TW') %></td></tr>
+        <tr style="background:#f8f6f1"><td colspan="4" style="font-size:12px;color:#555;padding:8px 12px"><%= d.content %></td></tr>
+        <% } %>
+      </table>
+      <% } %>
+    </div>
+    <% } %>
+
+    <!-- ===================== ANNOUNCE ===================== -->
+    <% if (page === 'announce') { %>
+    <div class="card">
+      <h2>發布公告</h2>
+      <form method="POST" action="/admin/announce/send">
+        <div class="form-group"><label>標題</label><input name="title" required></div>
+        <div class="form-group"><label>內容</label><textarea name="content" rows="4" required></textarea></div>
+        <button class="btn btn-gold" type="submit">📢 發布公告</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2>公告紀錄 <span class="count"><%= announcements.length %> 筆</span></h2>
+      <% if (announcements.length === 0) { %><div class="empty">尚無公告</div><% } %>
+      <% if (announcements.length > 0) { %>
+      <table>
+        <tr><th>編號</th><th>標題</th><th>發布者</th><th>時間</th></tr>
+        <% for (const a of announcements) { %>
+        <tr><td style="font-size:11px"><%= a.number %></td><td><strong><%= a.title %></strong></td><td><%= a.author %></td><td style="font-size:11px"><%= new Date(a.at).toLocaleString('zh-TW') %></td></tr>
+        <% } %>
+      </table>
+      <% } %>
+    </div>
+    <% } %>
+
+    <!-- ===================== ECONOMY ===================== -->
+    <% if (page === 'economy') { %>
+    <div class="stats">
+      <div class="stat-box"><div class="num"><%= Number(treasury).toLocaleString() %></div><div class="label">國庫總額</div></div>
+      <div class="stat-box"><div class="num"><%= Number(totalSupply).toLocaleString() %></div><div class="label">總流通量</div></div>
+      <div class="stat-box"><div class="num"><%= txCount %></div><div class="label">交易筆數</div></div>
+    </div>
+    <div class="card">
+      <h2>交易紀錄</h2>
+      <% if (txs.length === 0) { %><div class="empty">尚無交易</div><% } %>
+      <% if (txs.length > 0) { %>
+      <table>
+        <tr><th>時間</th><th>轉出</th><th>轉入</th><th>金額</th><th>備註</th></tr>
+        <% for (const t of txs) { %>
+        <tr><td style="font-size:11px"><%= new Date(t.at).toLocaleString('zh-TW') %></td><td style="font-size:11px"><%= t.from %></td><td style="font-size:11px"><%= t.to %></td><td><strong><%= t.amount %></strong></td><td style="color:#8b826e"><%= t.note || '-' %></td></tr>
+        <% } %>
+      </table>
+      <% } %>
+    </div>
+    <% } %>
+
+    <!-- ===================== DIPLOMACY ===================== -->
+    <% if (page === 'diplomacy') { %>
+    <div class="card">
+      <h2>邦交國 <span class="count"><%= allies.length %> 國</span></h2>
+      <% if (allies.length === 0) { %><div class="empty">尚無邦交國</div><% } %>
+      <% if (allies.length > 0) { %>
+      <table>
+        <tr><th>國家名稱</th><th>建交日期</th></tr>
+        <% for (const a of allies) { %>
+        <tr><td><strong><%= a.name %></strong></td><td><%= a.date || '-' %></td></tr>
+        <% } %>
+      </table>
+      <% } %>
+    </div>
+    <div class="card">
+      <h2>國際組織</h2>
+      <% if (orgs.length === 0) { %><div class="empty">尚未加入國際組織</div><% } %>
+      <% if (orgs.length > 0) { %>
+      <table>
+        <tr><th>組織名稱</th><th>加入日期</th></tr>
+        <% for (const o of orgs) { %>
+        <tr><td><strong><%= o.name %></strong></td><td><%= o.joined %></td></tr>
+        <% } %>
+      </table>
+      <% } %>
+    </div>
+    <% } %>
+
+    <!-- ===================== SERVERS ===================== -->
+    <% if (page === 'servers') { %>
+    <div class="card">
+      <h2>已加入的伺服器 <span class="count"><%= guilds.length %> 個</span></h2>
+      <% if (guilds.length === 0) { %><div class="empty">尚未加入任何伺服器</div><% } %>
+      <% if (guilds.length > 0) { %>
+      <table>
+        <tr><th>名稱</th><th>ID</th><th>成員數</th><th>擁有者</th></tr>
+        <% for (const g of guilds) { %>
+        <tr>
+          <td><strong><%= g.name %></strong></td>
+          <td style="font-size:11px;color:#8b826e"><%= g.id %></td>
+          <td><%= g.members %></td>
+          <td style="font-size:12px"><%= g.owner %></td>
+        </tr>
+        <% } %>
+      </table>
+      <% } %>
+    </div>
+    <% } %>
+
+    <!-- ===================== LOGS ===================== -->
+    <% if (page === 'logs') { %>
+    <div class="card">
+      <h2>系統操作日誌</h2>
+      <div style="background:#0f1a2e;color:#e8d5a3;padding:14px 18px;border-radius:4px;font-family:monospace;font-size:12px;max-height:400px;overflow-y:auto;line-height:1.7">
+        <% if (logs.length === 0) { %><div style="color:#5a5240">尚無紀錄</div><% } %>
+        <% for (const l of logs) { %>
+        <div style="border-bottom:1px solid rgba(255,255,255,0.03);padding:2px 0">[<%= l.time %>] <%= l.text %></div>
+        <% } %>
+      </div>
+    </div>
+    <% } %>
+
+  </div>
+</div>
+
+<script>
+function filterTable(val) {
+  const rows = document.getElementById('dataTable')?.querySelectorAll('tr:not(:first-child)');
+  if (!rows) return;
+  const lower = val.toLowerCase();
+  rows.forEach(r => { r.style.display = r.textContent.toLowerCase().includes(lower) ? '' : 'none' });
+}
+// Auto-hide alerts
+setTimeout(() => { document.querySelectorAll('.alert').forEach(el => el.style.display = 'none') }, 4000);
+</script>
+</body>
+</html>

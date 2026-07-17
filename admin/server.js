@@ -17,7 +17,6 @@ function startAdmin(client) {
   app.set('views', path.join(__dirname, 'views'));
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
-
   app.use(session({
     secret: process.env.SESSION_SECRET || require('crypto').randomBytes(32).toString('hex'),
     resave: false,
@@ -27,6 +26,13 @@ function startAdmin(client) {
   function requireAuth(req, res, next) {
     if (req.session.authenticated) return next();
     res.redirect('/login');
+  }
+
+  function baseData() {
+    return {
+      version: require('../package.json').version,
+      ping: client.ws.ping,
+    };
   }
 
   app.get('/', (req, res) => {
@@ -58,44 +64,106 @@ function startAdmin(client) {
     res.redirect('/login');
   });
 
+  function getVdr() {
+    return require('../src/services/vdr-data');
+  }
+
   app.get('/dashboard', requireAuth, (req, res) => {
-    const vdr = require('../src/services/vdr-data');
+    const vdr = getVdr();
     const db = vdr.get();
-    const citizens = Object.entries(db.citizens).map(([id, c]) => ({ id, ...c }));
-    res.render('dashboard', {
-      online: true,
-      ping: client.ws.ping,
-      commands: client.commands.size,
-      vdrStats: {
-        citizens: citizens.length,
+    const recent = [];
+    for (const d of db.decrees.slice(-3).reverse()) recent.push({ type: '總統令', time: new Date(d.issuedAt).toLocaleString('zh-TW'), text: d.title });
+    for (const a of (db.announcements || []).slice(-3).reverse()) recent.push({ type: '公告', time: new Date(a.at).toLocaleString('zh-TW'), text: a.title });
+    for (const t of db.economy.transactions.slice(-3).reverse()) recent.push({ type: '交易', time: new Date(t.at).toLocaleString('zh-TW'), text: `${t.amount} 幣` });
+    res.render('admin', { ...baseData(), page: 'dashboard', pageTitle: '國家控制臺',
+      d: {
+        citizens: Object.keys(db.citizens).length,
         decrees: db.decrees.length,
-        announcements: db.announcements ? db.announcements.length : 0,
+        announcements: (db.announcements || []).length,
         allies: db.allies.length,
         treasury: db.economy.treasury,
-        transactions: db.economy.transactions.length,
-        recentCitizens: citizens.sort((a, b) => new Date(b.registeredAt) - new Date(a.registeredAt)).slice(0, 5),
-      },
+        txCount: db.economy.transactions.length,
+        servers: client.guilds.cache.size,
+        regions: Object.keys(db.regions).length,
+        recent: recent.slice(0, 8),
+      }
     });
   });
 
-  app.get('/vdr', requireAuth, (req, res) => {
-    const vdr = require('../src/services/vdr-data');
+  app.get('/admin/citizens', requireAuth, (req, res) => {
+    const vdr = getVdr();
     const db = vdr.get();
-    res.render('vdr', {
-      nation: {
-        citizens: Object.keys(db.citizens).length,
-        allies: db.allies.length,
-        decrees: db.decrees.length,
-        announcements: (db.announcements || []).length,
-        treasury: db.economy.treasury,
-        totalSupply: db.economy.totalSupply,
-        txCount: db.economy.transactions.length,
-        regions: Object.keys(db.regions).length,
-      },
-      citizens: Object.entries(db.citizens).map(([id, c]) => ({ id, ...c })),
-      decrees: [...db.decrees].reverse(),
+    const citizens = Object.entries(db.citizens).map(([id, c]) => ({ id, ...c }));
+    res.render('admin', { ...baseData(), page: 'citizens', pageTitle: '公民管理', citizens });
+  });
+
+  app.get('/admin/decrees', requireAuth, (req, res) => {
+    const vdr = getVdr();
+    const db = vdr.get();
+    res.render('admin', { ...baseData(), page: 'decrees', pageTitle: '總統令', decrees: [...db.decrees].reverse() });
+  });
+
+  app.get('/admin/announce', requireAuth, (req, res) => {
+    const vdr = getVdr();
+    const db = vdr.get();
+    res.render('admin', { ...baseData(), page: 'announce', pageTitle: '國家公告',
       announcements: [...(db.announcements || [])].reverse(),
+      alert: req.session.alert || null,
+    });
+    req.session.alert = null;
+  });
+
+  app.post('/admin/announce/send', requireAuth, (req, res) => {
+    const vdr = getVdr();
+    const db = vdr.get();
+    const { title, content } = req.body;
+    const num = vdr.nextAnnounceNumber();
+    vdr.addAnnouncement(num, title, content, '管理員');
+    const msg = `**【𝐕𝐃𝐑國家發展公告】**\n\n條約編號：虛外字第 ${num} 號\n＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n\n${content}\n\n＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n發布者：管理員\n發布單位：技術發展部\n公告單位：虛境民主共和國總統府`;
+    const channel = client.channels.cache.find(c => c.type === 0);
+    if (channel) channel.send(msg);
+    req.session.alert = { type: 'success', text: `公告 ${num} 已發布` };
+    res.redirect('/admin/announce');
+  });
+
+  app.get('/admin/economy', requireAuth, (req, res) => {
+    const vdr = getVdr();
+    const db = vdr.get();
+    res.render('admin', { ...baseData(), page: 'economy', pageTitle: '經濟管理',
+      treasury: db.economy.treasury,
+      totalSupply: db.economy.totalSupply,
+      txCount: db.economy.transactions.length,
       txs: [...db.economy.transactions].reverse().slice(0, 50),
+    });
+  });
+
+  app.get('/admin/diplomacy', requireAuth, (req, res) => {
+    const vdr = getVdr();
+    const db = vdr.get();
+    res.render('admin', { ...baseData(), page: 'diplomacy', pageTitle: '外交邦交',
+      allies: db.allies,
+      orgs: db.organizations,
+    });
+  });
+
+  app.get('/admin/servers', requireAuth, (req, res) => {
+    const guilds = [...client.guilds.cache.values()].map(g => ({
+      id: g.id, name: g.name, members: g.memberCount,
+      owner: g.members.cache.get(g.ownerId)?.user?.tag || '未知',
+    }));
+    res.render('admin', { ...baseData(), page: 'servers', pageTitle: '伺服器管理', guilds });
+  });
+
+  app.get('/admin/logs', requireAuth, (req, res) => {
+    const vdr = getVdr();
+    const db = vdr.get();
+    const logs = [];
+    for (const d of db.decrees) logs.push({ time: new Date(d.issuedAt).toLocaleString('zh-TW'), text: `📜 總統令 #${d.id}：${d.title}` });
+    for (const a of (db.announcements || [])) logs.push({ time: new Date(a.at).toLocaleString('zh-TW'), text: `📢 公告 ${a.number}：${a.title}` });
+    for (const t of db.economy.transactions) logs.push({ time: new Date(t.at).toLocaleString('zh-TW'), text: `💰 ${t.amount} 幣 ${t.from} → ${t.to}` });
+    logs.sort((a, b) => new Date(b.time) - new Date(a.time));
+    res.render('admin', { ...baseData(), page: 'logs', pageTitle: '系統日誌',
+      logs: logs.slice(0, 100),
     });
   });
 
