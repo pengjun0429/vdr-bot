@@ -95,8 +95,8 @@ module.exports = {
     if (interaction.options.getSubcommand() === 'announce') {
       const title = interaction.options.getString('標題');
       const content = interaction.options.getString('內容');
-      const nextNum = String(db.decrees.length + 1).padStart(10, '0');
-      const msg = `**【𝐕𝐃𝐑國家發展公告】**\n\n條約編號：虛外字第 ${nextNum} 號\n＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n\n${content}\n\n＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n發布者：${interaction.user.tag}\n發布單位：技術發展部\n公告單位：虛境民主共和國總統府`;
+      const num = vdr.nextAnnounceNumber();
+      const msg = `**【𝐕𝐃𝐑國家發展公告】**\n\n條約編號：虛外字第 ${num} 號\n＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n\n${content}\n\n＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n發布者：${interaction.user.tag}\n發布單位：技術發展部\n公告單位：虛境民主共和國總統府`;
       await interaction.reply({ content: '公告已發布', ephemeral: true });
       const channel = interaction.guild.systemChannel;
       if (channel) channel.send(msg);

@@ -89,6 +89,7 @@ const defaults = {
       duties: '保衛香蕉教',
     },
   },
+  announceCount: {},
   economy: {
     totalSupply: 1000000,
     treasury: 500000,
@@ -123,6 +124,15 @@ function save() {
 function get() {
   if (!cache) load();
   return cache;
+}
+
+function nextAnnounceNumber() {
+  const db = get();
+  const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  if (!db.announceCount[today]) db.announceCount[today] = 0;
+  db.announceCount[today]++;
+  save();
+  return `${today}-${String(db.announceCount[today]).padStart(3, '0')}`;
 }
 
 function registerCitizen(userId, data) {
@@ -212,6 +222,7 @@ module.exports = {
   load, save, get,
   registerCitizen, getCitizen,
   addDecree, transfer,
+  nextAnnounceNumber,
   syncToSheet,
   defaults,
 };
