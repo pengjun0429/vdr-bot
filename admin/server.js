@@ -119,8 +119,8 @@ function startAdmin(client) {
       delete req.session.returnTo;
       res.redirect(returnTo);
     } catch (err) {
-      logger.error('Discord OAuth2 錯誤:', err.message);
-      res.render('login', { error: '認證失敗', discordUrl: '#', useDiscord: true });
+      logger.error('Discord OAuth2 錯誤:', err.message, err.response?.data || '');
+      res.render('login', { error: '認證失敗：' + (err.response?.data?.error_description || err.message), discordUrl: '#', useDiscord: true });
     }
   });
 
