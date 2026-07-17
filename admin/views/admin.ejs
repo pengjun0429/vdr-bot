@@ -350,6 +350,14 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
             <% } %>
           </select>
         </div>
+        <div class="form-group"><label>自動發放身分組（新成員加入時自動獲得）</label>
+          <select name="autoRoleId">
+            <option value="">-- 不發放 --</option>
+            <% for (const r of allRoles) { %>
+            <option value="<%= r.id %>" <%= autoRoleId === r.id ? 'selected' : '' %>><%= r.name %></option>
+            <% } %>
+          </select>
+        </div>
         <button class="btn btn-gold" type="submit">💾 儲存設定</button>
       </form>
     </div>

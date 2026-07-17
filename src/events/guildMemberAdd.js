@@ -6,6 +6,14 @@ module.exports = {
   async execute(member) {
     try {
       const db = vdr.get();
+
+      if (db.autoRoleId) {
+        const role = member.guild.roles.cache.get(db.autoRoleId);
+        if (role && role.position < member.guild.members.me.roles.highest.position) {
+          await member.roles.add(role).catch(() => {});
+        }
+      }
+
       if (!db.welcome?.enabled) return;
       const n = db.nation;
       const welcomeEmbed = new EmbedBuilder()

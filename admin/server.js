@@ -345,13 +345,18 @@ function startAdmin(client) {
     const vdr = getVdr();
     const db = vdr.get();
     const channels = [];
+    const allRoles = [];
     for (const g of client.guilds.cache.values()) {
       for (const c of g.channels.cache.values()) {
         if (c.type === 0) channels.push({ id: c.id, name: `#${c.name}（${g.name}）` });
       }
+      for (const r of g.roles.cache.sort((a, b) => b.position - a.position).values()) {
+        if (r.name === '@everyone') continue;
+        allRoles.push({ id: r.id, name: `${r.name}（${g.name}）`, color: r.hexColor === '#000000' ? null : r.hexColor });
+      }
     }
     res.render('admin', { ...baseData(), page: 'welcome', pageTitle: '歡迎設定', user: req.session.user,
-      welcome: db.welcome || { enabled: true, channelId: '' }, channels,
+      welcome: db.welcome || { enabled: true, channelId: '' }, channels, allRoles, autoRoleId: db.autoRoleId || '',
       alert: req.session.alert || null,
     });
     req.session.alert = null;
@@ -361,6 +366,7 @@ function startAdmin(client) {
     const vdr = getVdr();
     const db = vdr.get();
     db.welcome = { enabled: req.body.enabled === '1', channelId: req.body.channelId || '' };
+    db.autoRoleId = req.body.autoRoleId || '';
     vdr.save();
     req.session.alert = { type: 'success', text: '歡迎設定已儲存' };
     res.redirect('/admin/welcome');
