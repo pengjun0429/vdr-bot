@@ -1,16 +1,19 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const vdr = require('../../services/vdr-data');
 
+const PRESIDENT_ROLE_ID = '1397444700843151463';
+
 module.exports = {
   category: '政府',
   data: new SlashCommandBuilder()
     .setName('vdr-decree')
-    .setDescription('發布總統令（伺服器管理員專用）')
+    .setDescription('發布總統令（總統或管理員專用）')
     .addStringOption(opt => opt.setName('標題').setDescription('總統令標題').setRequired(true))
     .addStringOption(opt => opt.setName('內容').setDescription('總統令內容').setRequired(true)),
   async execute(interaction) {
-    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator) && interaction.user.id !== interaction.guild.ownerId) {
-      return interaction.reply({ content: '只有伺服器管理員才能發布總統令', ephemeral: true });
+    const isPresident = interaction.member.roles.cache.has(PRESIDENT_ROLE_ID);
+    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator) && !isPresident) {
+      return interaction.reply({ content: '只有總統或管理員才能發布總統令', ephemeral: true });
     }
     const title = interaction.options.getString('標題');
     const content = interaction.options.getString('內容');

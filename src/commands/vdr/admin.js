@@ -2,11 +2,13 @@ const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('disc
 const vdr = require('../../services/vdr-data');
 const pkg = require('../../../package.json');
 
+const PRESIDENT_ROLE_ID = '1397444700843151463';
+
 module.exports = {
   category: '政府',
   data: new SlashCommandBuilder()
     .setName('vdr-admin')
-    .setDescription('國家管理指令（管理員專用）')
+    .setDescription('國家管理指令（總統或管理員專用）')
     .addSubcommandGroup(group => group
       .setName('citizen').setDescription('公民管理')
       .addSubcommand(sub => sub.setName('list').setDescription('查看公民列表'))
@@ -30,8 +32,9 @@ module.exports = {
     .addSubcommand(sub => sub
       .setName('export').setDescription('輸出國家資料')),
   async execute(interaction) {
-    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-      return interaction.reply({ content: '只有管理員才能使用此指令', ephemeral: true });
+    const isPresident = interaction.member.roles.cache.has(PRESIDENT_ROLE_ID);
+    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator) && !isPresident) {
+      return interaction.reply({ content: '只有總統或管理員才能使用此指令', ephemeral: true });
     }
 
     const db = vdr.get();
