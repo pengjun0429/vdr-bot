@@ -92,7 +92,8 @@ const defaults = {
     },
   },
   announceCount: {},
-  welcome: { enabled: true, channelId: '' },
+  welcome: { enabled: true, channelId: '', message: '歡迎 {user} 加入 {name}！\n請使用 /vdr-register 註冊成為公民。' },
+  farewell: { enabled: false, channelId: '', message: '{user} 離開了 {name}。' },
   autoRole: { joinRoleId: '', citizenRoleId: '' },
   autoRoleId: '',
   economy: {

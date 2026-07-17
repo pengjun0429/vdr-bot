@@ -429,8 +429,10 @@ function startAdmin(client) {
         if (c.type === 0) channels.push({ id: c.id, name: `#${c.name}（${g.name}）` });
       }
     }
-    res.render('admin', { ...baseData(), page: 'welcome', pageTitle: '歡迎設定', user: req.session.user,
-      welcome: db.welcome || { enabled: true, channelId: '' }, channels,
+    res.render('admin', { ...baseData(), page: 'welcome', pageTitle: '歡迎/離開設定', user: req.session.user,
+      welcome: db.welcome || { enabled: true, channelId: '', message: '' },
+      farewell: db.farewell || { enabled: false, channelId: '', message: '' },
+      channels,
       alert: req.session.alert || null,
     });
     req.session.alert = null;
@@ -439,9 +441,18 @@ function startAdmin(client) {
   app.post('/admin/welcome/save', requireAuth, (req, res) => {
     const vdr = getVdr();
     const db = vdr.get();
-    db.welcome = { enabled: req.body.enabled === '1', channelId: req.body.channelId || '' };
+    db.welcome = {
+      enabled: req.body.welcome_enabled === '1',
+      channelId: req.body.welcome_channelId || '',
+      message: req.body.welcome_message || '',
+    };
+    db.farewell = {
+      enabled: req.body.farewell_enabled === '1',
+      channelId: req.body.farewell_channelId || '',
+      message: req.body.farewell_message || '',
+    };
     vdr.save();
-    req.session.alert = { type: 'success', text: '歡迎設定已儲存' };
+    req.session.alert = { type: 'success', text: '設定已儲存' };
     res.redirect('/admin/welcome');
   });
 

@@ -309,8 +309,18 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <div class="card">
       <h2>歡迎訊息設定</h2>
       <form method="POST" action="/admin/welcome/save">
-        <div class="form-group"><label><input type="checkbox" name="enabled" value="1" <%= welcome.enabled ? 'checked' : '' %> style="width:auto"> 啟用歡迎訊息</label></div>
-        <div class="form-group"><label>發送頻道</label><select name="channelId"><option value="">系統預設頻道</option><% for (const ch of channels) { %><option value="<%= ch.id %>"><%= ch.name %></option><% } %></select></div>
+        <div class="form-group"><label><input type="checkbox" name="welcome_enabled" value="1" <%= welcome.enabled ? 'checked' : '' %> style="width:auto"> 啟用歡迎訊息</label></div>
+        <div class="form-group"><label>發送頻道</label><select name="welcome_channelId"><option value="">系統預設頻道</option><% for (const ch of channels) { %><option value="<%= ch.id %>"><%= ch.name %></option><% } %></select></div>
+        <div class="form-group"><label>歡迎訊息內容</label>
+          <textarea name="welcome_message" rows="4" placeholder="可使用 {user} @成員、{name} 名稱、{server} 伺服器、{channel} 頻道、{count} 人數"><%= welcome.message || '' %></textarea>
+        </div>
+        <hr style="border:none;border-top:1px solid #e0ddd6;margin:14px 0">
+        <h2 style="font-size:14px">離開訊息設定</h2>
+        <div class="form-group" style="margin-top:10px"><label><input type="checkbox" name="farewell_enabled" value="1" <%= farewell.enabled ? 'checked' : '' %> style="width:auto"> 啟用離開訊息</label></div>
+        <div class="form-group"><label>發送頻道</label><select name="farewell_channelId"><option value="">系統預設頻道</option><% for (const ch of channels) { %><option value="<%= ch.id %>"><%= ch.name %></option><% } %></select></div>
+        <div class="form-group"><label>離開訊息內容</label>
+          <textarea name="farewell_message" rows="3" placeholder="可使用 {name}、{server}、{count}"><%= farewell.message || '' %></textarea>
+        </div>
         <button class="btn btn-gold" type="submit">💾 儲存設定</button>
       </form>
     </div>
