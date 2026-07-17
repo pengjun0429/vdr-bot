@@ -341,6 +341,29 @@ function startAdmin(client) {
     res.redirect('/admin/roles');
   });
 
+  app.get('/admin/autorole', requireAuth, (req, res) => {
+    const vdr = require('../src/services/vdr-data');
+    const db = vdr.get();
+    const roles = [];
+    for (const g of client.guilds.cache.values()) {
+      for (const r of g.roles.cache.sort((a, b) => b.position - a.position).values()) {
+        if (r.name === '@everyone') continue;
+        roles.push({ id: r.id, name: r.name, guild: g.name });
+      }
+    }
+    res.render('admin', { ...baseData(), page: 'autorole', pageTitle: '自動身分組', roles, autoRole: db.autoRole || { joinRoleId: '', citizenRoleId: '' }, user: req.session.user, alert: req.session.alert || null });
+    req.session.alert = null;
+  });
+
+  app.post('/admin/autorole/save', requireAuth, (req, res) => {
+    const vdr = require('../src/services/vdr-data');
+    const db = vdr.get();
+    db.autoRole = { joinRoleId: req.body.joinRoleId || '', citizenRoleId: req.body.citizenRoleId || '' };
+    vdr.save();
+    req.session.alert = { type: 'success', text: '自動身分組設定已儲存' };
+    res.redirect('/admin/autorole');
+  });
+
   app.get('/admin/welcome', requireAuth, (req, res) => {
     const vdr = getVdr();
     const db = vdr.get();

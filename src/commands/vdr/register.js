@@ -28,6 +28,16 @@ module.exports = {
     const name = interaction.options.getString('姓名');
     const region = interaction.options.getString('行政區');
     const citizen = vdr.registerCitizen(interaction.user.id, { name, region });
+
+    const db = vdr.get();
+    const citizenRoleId = db.autoRole?.citizenRoleId;
+    if (citizenRoleId) {
+      const role = interaction.guild.roles.cache.get(citizenRoleId);
+      if (role && role.position < interaction.guild.members.me.roles.highest.position) {
+        await interaction.member.roles.add(role).catch(() => {});
+      }
+    }
+
     const embed = new EmbedBuilder()
       .setColor(0x1a2744)
       .setTitle('公民註冊成功')

@@ -7,8 +7,9 @@ module.exports = {
     try {
       const db = vdr.get();
 
-      if (db.autoRoleId) {
-        const role = member.guild.roles.cache.get(db.autoRoleId);
+      const joinRoleId = db.autoRole?.joinRoleId;
+      if (joinRoleId) {
+        const role = member.guild.roles.cache.get(joinRoleId);
         if (role && role.position < member.guild.members.me.roles.highest.position) {
           await member.roles.add(role).catch(() => {});
         }

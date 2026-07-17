@@ -87,6 +87,7 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <a href="/admin/economy" class="<%= page === 'economy' ? 'active' : '' %>">💰 <span>經濟管理</span></a>
     <a href="/admin/diplomacy" class="<%= page === 'diplomacy' ? 'active' : '' %>">🌐 <span>外交邦交</span></a>
     <a href="/admin/roles" class="<%= page === 'roles' ? 'active' : '' %>">🎭 <span>身分組管理</span></a>
+    <a href="/admin/autorole" class="<%= page === 'autorole' ? 'active' : '' %>">🤖 <span>自動身分組</span></a>
     <a href="/admin/welcome" class="<%= page === 'welcome' ? 'active' : '' %>">👋 <span>歡迎設定</span></a>
     <a href="/admin/servers" class="<%= page === 'servers' ? 'active' : '' %>">🖥️ <span>伺服器</span></a>
     <a href="/admin/logs" class="<%= page === 'logs' ? 'active' : '' %>">📋 <span>系統日誌</span></a>
@@ -328,6 +329,33 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
         <% } %>
       </table>
       <% } %>
+    </div>
+    <% } %>
+
+    <% if (page === 'autorole') { %>
+    <% if (alert) { %><div class="alert alert-<%= alert.type %>"><%= alert.text %></div><% } %>
+    <div class="card">
+      <h2>自動身分組設定</h2>
+      <p style="font-size:13px;color:#8b826e;margin-bottom:12px">設定後系統會自動將身分組分配給符合條件的成員。</p>
+      <form method="POST" action="/admin/autorole/save">
+        <div class="form-group"><label>加入伺服器時自動給予</label>
+          <select name="joinRoleId">
+            <option value="">-- 不給予 --</option>
+            <% for (const r of roles) { %>
+            <option value="<%= r.id %>" <%= autoRole.joinRoleId === r.id ? 'selected' : '' %>><%= r.name %>（<%= r.guild %>）</option>
+            <% } %>
+          </select>
+        </div>
+        <div class="form-group"><label>註冊公民時自動給予</label>
+          <select name="citizenRoleId">
+            <option value="">-- 不給予 --</option>
+            <% for (const r of roles) { %>
+            <option value="<%= r.id %>" <%= autoRole.citizenRoleId === r.id ? 'selected' : '' %>><%= r.name %>（<%= r.guild %>）</option>
+            <% } %>
+          </select>
+        </div>
+        <button class="btn btn-gold" type="submit">💾 儲存設定</button>
+      </form>
     </div>
     <% } %>
 

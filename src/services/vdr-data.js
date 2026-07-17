@@ -93,6 +93,7 @@ const defaults = {
   },
   announceCount: {},
   welcome: { enabled: true, channelId: '' },
+  autoRole: { joinRoleId: '', citizenRoleId: '' },
   autoRoleId: '',
   economy: {
     totalSupply: 1000000,
