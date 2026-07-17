@@ -407,6 +407,34 @@ function startAdmin(client) {
     });
   });
 
+  
+  app.get('/admin/say', requireAuth, (req, res) => {
+    const channels = [];
+    for (const g of client.guilds.cache.values()) {
+      for (const ch of g.channels.cache.values()) {
+        if (ch.type === 0) channels.push({ id: ch.id, name: ch.name + ' (' + g.name + ')' });
+      }
+    }
+    res.render('admin', { ...baseData(), page: 'say', pageTitle: '機器人發言', channels, user: req.session.user, alert: req.session.alert || null });
+    req.session.alert = null;
+  });
+
+  app.post('/admin/say/send', requireAuth, (req, res) => {
+    const { channelId, message } = req.body;
+    if (!channelId || !message) {
+      req.session.alert = { type: 'error', text: '請選擇頻道並填寫訊息' };
+      return res.redirect('/admin/say');
+    }
+    const channel = client.channels.cache.get(channelId);
+    if (channel) {
+      channel.send(message).catch(() => {});
+      req.session.alert = { type: 'success', text: '已發送訊息至 #' + (channel.name || '頻道') };
+    } else {
+      req.session.alert = { type: 'error', text: '找不到頻道' };
+    }
+    res.redirect('/admin/say');
+  });
+
   app.listen(PORT, () => {
     logger.info(`管理後臺已啟動: http://localhost:${PORT}`);
   });

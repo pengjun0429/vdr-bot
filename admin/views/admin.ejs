@@ -89,6 +89,7 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <a href="/admin/roles" class="<%= page === 'roles' ? 'active' : '' %>">? <span>頨怠?蝯恣??/span></a>
     <a href="/admin/airoles" class="<%= page === 'autorole' ? 'active' : '' %>">?? <span>?芸?頨怠?蝯?/span></a>
     <a href="/admin/welcome" class="<%= page === 'welcome' ? 'active' : '' %>">?? <span>甇∟?閮剖?</span></a>
+    <a href="/admin/say" class="<%= page === 'say' ? 'active' : '' %>">💬 <span>機器人發言</span></a>
     <a href="/admin/servers" class="<%= page === 'servers' ? 'active' : '' %>">?儭?<span>隡箸???/span></a>
     <a href="/admin/logs" class="<%= page === 'logs' ? 'active' : '' %>">?? <span>蝟餌絞?亥?</span></a>
   </nav>
@@ -406,6 +407,29 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
           </select>
         </div>
         <button class="btn btn-gold" type="submit">? ?脣?閮剖?</button>
+      </form>
+    </div>
+    <% } %>
+
+    
+    <% if (page === 'say') { %>
+    <% if (alert) { %><div class="alert alert-<%= alert.type %>"><%= alert.text %></div><% } %>
+    <div class="card">
+      <h2>機器人發言</h2>
+      <p style="font-size:13px;color:#8b826e;margin-bottom:12px">以機器人的身分向選定頻道發送訊息。</p>
+      <form method="POST" action="/admin/say/send">
+        <div class="form-group"><label>發送到</label>
+          <select name="channelId" required>
+            <option value="">-- 選擇頻道 --</option>
+            <% for (const ch of channels) { %>
+            <option value="<%= ch.id %>"><%= ch.name %></option>
+            <% } %>
+          </select>
+        </div>
+        <div class="form-group"><label>訊息內容</label>
+          <textarea name="message" rows="5" required placeholder="輸入訊息內容..."></textarea>
+        </div>
+        <button class="btn btn-gold" type="submit">📣 發送</button>
       </form>
     </div>
     <% } %>
