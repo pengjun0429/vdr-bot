@@ -34,13 +34,10 @@ async function deploy() {
     const guildId = process.env.DISCORD_GUILD_ID;
 
     if (guildId) {
-      await rest.put(Routes.applicationCommands(config.discord.clientId), {
+      await rest.put(Routes.applicationGuildCommands(config.discord.clientId, guildId), {
         body: commands,
       });
-      await rest.put(Routes.applicationGuildCommands(config.discord.clientId, guildId), {
-        body: [],
-      });
-      logger.info(`已將 ${commands.length} 個指令註冊到全域，並清除測試伺服器的舊快取`);
+      logger.info(`已將 ${commands.length} 個指令註冊到測試伺服器（立即生效）`);
     } else {
       await rest.put(Routes.applicationCommands(config.discord.clientId), {
         body: commands,
