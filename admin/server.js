@@ -100,11 +100,14 @@ function startAdmin(client) {
 
   app.get('/', (req, res) => {
     if (req.session.authenticated) return res.redirect('/dashboard');
+    const vdr = require('../src/services/vdr-data');
+    const db = vdr.get();
     res.render('landing', {
       guildCount: client.guilds.cache.size,
       userCount: client.guilds.cache.reduce((s, g) => s + g.memberCount, 0),
       ping: client.ws.ping,
       commands: client.commands.size,
+      citizens: Object.keys(db.citizens).length,
     });
   });
 

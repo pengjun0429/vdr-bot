@@ -2,29 +2,37 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>登入 - OmniBot</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>登入 - VDR 政府服務機器人</title>
   <style>
     * { margin:0;padding:0;box-sizing:border-box; }
-    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:#09090b; color:#e4e4e7; display:flex;justify-content:center;align-items:center;height:100vh; }
-    body::before { content:''; position:fixed; top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 20%, rgba(99,102,241,0.06) 0%, transparent 50%);pointer-events:none; }
-    .card { position:relative;z-index:1;background:rgba(24,24,27,0.8);border:1px solid rgba(255,255,255,0.04);border-radius:12px;padding:40px;width:380px;max-width:90vw;backdrop-filter:blur(10px);text-align:center; }
-    h1 { font-size:22px;color:#fff;margin-bottom:16px; }
-    h1 span { color:#6366f1; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:#0f1a2e; color:#e4e4e7; display:flex;justify-content:center;align-items:center;height:100vh; }
+    body::before { content:''; position:fixed; top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 20%, rgba(201,168,76,0.06) 0%, transparent 50%);pointer-events:none; }
+    .card { position:relative;z-index:1;background:rgba(24,24,27,0.6);border:1px solid rgba(255,255,255,0.04);border-radius:12px;padding:40px;width:380px;max-width:90vw;backdrop-filter:blur(10px);text-align:center; }
+    .seal { width:56px;height:56px;margin:0 auto 16px;border:2px solid #c9a84c;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#c9a84c; }
+    h1 { font-size:18px;color:#fff;margin-bottom:4px; }
+    h1 span { color:#c9a84c; }
+    .sub { font-size:12px;color:#8b826e;margin-bottom:20px; }
     .error { color:#ef4444;font-size:13px;margin-bottom:16px;background:rgba(239,68,68,0.08);padding:8px 12px;border-radius:6px; }
-    .btn { display:block;width:100%;padding:12px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none;transition:all 0.15s;cursor:pointer;border:none; }
-    .btn-discord { background:#5865F2;color:#fff; }
-    .btn-discord:hover { background:#4752C4;transform:translateY(-1px); }
+    form { display:flex;flex-direction:column;gap:12px; }
+    input { padding:10px 14px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.2);color:#fff;font-size:14px;outline:none; }
+    input:focus { border-color:#c9a84c; }
+    .btn { padding:10px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;border:none;background:#c9a84c;color:#0f1a2e;transition:0.15s; }
+    .btn:hover { background:#dcc060; }
     .back { display:block;margin-top:16px;font-size:12px;color:#52525b;text-decoration:none; }
     .back:hover { color:#a1a1aa; }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1>Omni<span>Bot</span></h1>
-    <p style="font-size:13px;color:#71717a;margin-bottom:24px;">使用 Discord 帳號登入管理後臺</p>
+    <div class="seal">VDR</div>
+    <h1>虛境民主共和國</h1>
+    <div class="sub">政府服務機器人 管理後臺</div>
     <% if (locals.error) { %><div class="error"><%= error %></div><% } %>
-    <a href="/auth/discord" class="btn btn-discord"> Discord 登入</a>
+    <form method="POST" action="/login">
+      <input type="text" name="username" placeholder="帳號" required>
+      <input type="password" name="password" placeholder="密碼" required>
+      <button class="btn" type="submit">登入</button>
+    </form>
     <a href="/" class="back">← 回首頁</a>
   </div>
 </body>
