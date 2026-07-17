@@ -340,13 +340,34 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
 
     <!-- ===================== LOGS ===================== -->
     <% if (page === 'logs') { %>
-    <div class="card">
-      <h2>系統操作日誌</h2>
-      <div style="background:#0f1a2e;color:#e8d5a3;padding:14px 18px;border-radius:4px;font-family:monospace;font-size:12px;max-height:400px;overflow-y:auto;line-height:1.7">
-        <% if (logs.length === 0) { %><div style="color:#5a5240">尚無紀錄</div><% } %>
-        <% for (const l of logs) { %>
-        <div style="border-bottom:1px solid rgba(255,255,255,0.03);padding:2px 0">[<%= l.time %>] <%= l.text %></div>
-        <% } %>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <div style="flex:1;min-width:300px">
+        <div class="card">
+          <h2>系統操作紀錄</h2>
+          <div style="background:#0f1a2e;color:#e8d5a3;padding:12px 16px;border-radius:4px;font-family:monospace;font-size:11px;max-height:400px;overflow-y:auto;line-height:1.6">
+            <% if (systemLogs.length === 0) { %><div style="color:#5a5240">尚無紀錄</div><% } %>
+            <% for (const l of systemLogs) { %>
+            <div style="border-bottom:1px solid rgba(255,255,255,0.03);padding:2px 0">[<%= l.time %>] <%= l.text %></div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <div style="flex:2;min-width:300px">
+        <div class="card">
+          <h2>訊息紀錄 <span class="count">最新 <%= messages.length %> 筆</span></h2>
+          <div style="background:#0f1a2e;color:#e8d5a3;padding:12px 16px;border-radius:4px;font-family:monospace;font-size:11px;max-height:500px;overflow-y:auto;line-height:1.5">
+            <% if (messages.length === 0) { %><div style="color:#5a5240">尚未有任何訊息</div><% } %>
+            <% for (const m of messages) { %>
+            <div style="border-bottom:1px solid rgba(255,255,255,0.03);padding:3px 0">
+              [<%= new Date(m.timestamp).toLocaleString('zh-TW') %>]
+              <span style="color:<%= m.type === 'delete' ? '#ef4444' : '#e8d5a3' %>"><%= m.authorTag %></span>
+              <span style="color:#8b826e">#<%= m.channelName %></span>
+              <% if (m.type === 'delete') { %><span style="color:#ef4444">[已刪除]</span><% } %>
+              ：<%= (m.content || '').slice(0, 200) %>
+            </div>
+            <% } %>
+          </div>
+        </div>
       </div>
     </div>
     <% } %>

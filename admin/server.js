@@ -314,13 +314,18 @@ function startAdmin(client) {
   app.get('/admin/logs', requireAuth, (req, res) => {
     const vdr = getVdr();
     const db = vdr.get();
-    const logs = [];
-    for (const d of db.decrees) logs.push({ time: new Date(d.issuedAt).toLocaleString('zh-TW'), text: `📜 總統令 #${d.id}：${d.title}` });
-    for (const a of (db.announcements || [])) logs.push({ time: new Date(a.at).toLocaleString('zh-TW'), text: `📢 公告 ${a.number}：${a.title}` });
-    for (const t of db.economy.transactions) logs.push({ time: new Date(t.at).toLocaleString('zh-TW'), text: `💰 ${t.amount} 幣 ${t.from} → ${t.to}` });
-    logs.sort((a, b) => new Date(b.time) - new Date(a.time));
+    const systemLogs = [];
+    for (const d of db.decrees) systemLogs.push({ time: new Date(d.issuedAt).toLocaleString('zh-TW'), text: `📜 總統令 #${d.id}：${d.title}` });
+    for (const a of (db.announcements || [])) systemLogs.push({ time: new Date(a.at).toLocaleString('zh-TW'), text: `📢 公告 ${a.number}：${a.title}` });
+    for (const t of db.economy.transactions) systemLogs.push({ time: new Date(t.at).toLocaleString('zh-TW'), text: `💰 ${t.amount} 幣 ${t.from} → ${t.to}` });
+    systemLogs.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+    const msgLog = require('../src/services/message-log');
+    const messages = msgLog.getRecent(100);
+
     res.render('admin', { ...baseData(), page: 'logs', pageTitle: '系統日誌', user: req.session.user,
-      logs: logs.slice(0, 100),
+      systemLogs: systemLogs.slice(0, 50),
+      messages,
     });
   });
 
