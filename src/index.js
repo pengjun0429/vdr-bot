@@ -3,12 +3,11 @@ const config = require('./config');
 const logger = require('./utils/logger');
 const { deploy } = require('./utils/deploy-commands');
 const { registerCommands, registerEvents } = require('./utils/command-handler');
-const firebase = require('./services/firebase');
-const settings = require('./services/settings');
+const vdr = require('./services/vdr-data');
 
 async function start() {
-  await settings.init();
-  firebase.init();
+  vdr.load();
+  logger.info('VDR 國家資料已載入');
   registerCommands(client);
   registerEvents(client);
 

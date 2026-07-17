@@ -1,15 +1,13 @@
 {
-  "name": "omnibot",
+  "name": "vdr-bot",
   "version": "1.0.0-beta.1",
-  "description": "VDR 政府服務機器人",
+  "description": "VDR 政府服務機器人 - 虛境民主共和國",
   "private": true,
   "main": "src/index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node replit-entry.js",
+    "start": "node src/index.js",
     "dev": "node --watch src/index.js",
-    "admin": "node admin/server.js",
-    "replit": "node replit-entry.js",
     "lint": "oxlint"
   },
   "dependencies": {

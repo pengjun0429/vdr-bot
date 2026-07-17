@@ -1,0 +1,104 @@
+{
+  "1471127048620609833": {
+    "welcome": {
+      "enabled": false,
+      "channelId": "",
+      "message": "",
+      "image": ""
+    },
+    "farewell": {
+      "enabled": false,
+      "channelId": "",
+      "message": ""
+    },
+    "selfRoles": [],
+    "roleGroups": [],
+    "autoVoice": {
+      "channelId": "",
+      "categoryId": "",
+      "nameTemplate": "",
+      "userLimit": 0,
+      "bitrate": 64000,
+      "rtcRegion": "",
+      "logging": false
+    },
+    "ticket": {
+      "categoryId": "",
+      "roleIds": [],
+      "channelId": ""
+    },
+    "autoMod": {
+      "enabled": false,
+      "words": [],
+      "allowedWords": [],
+      "regexWords": [],
+      "blockLinks": false,
+      "phishingProtection": false,
+      "aiFilter": false,
+      "aiPrompt": "",
+      "logChannelId": "",
+      "punishment": "delete",
+      "timeoutMinutes": 10,
+      "logLevel": "all",
+      "strikes": {},
+      "strikeResetHours": 24,
+      "userStrikes": {}
+    },
+    "roleGive": {
+      "channelId": ""
+    },
+    "messageLog": {
+      "channelId": ""
+    },
+    "messageLogAll": {
+      "enabled": false
+    },
+    "inviteGuard": {
+      "enabled": false,
+      "whitelist": [],
+      "logChannelId": ""
+    },
+    "appeal": {
+      "channelId": ""
+    },
+    "githubWebhook": {
+      "channelId": ""
+    },
+    "antiRaid": {
+      "enabled": false,
+      "joinThreshold": 5,
+      "joinWindow": 10,
+      "spamThreshold": 5,
+      "spamWindow": 5,
+      "spamTimeout": 1,
+      "action": "kick",
+      "logChannelId": ""
+    },
+    "inviteLog": {
+      "channelId": ""
+    },
+    "adminRoles": {
+      "topIds": [],
+      "modIds": []
+    },
+    "blockedUsers": [],
+    "customCommands": {},
+    "autoRoleId": "",
+    "warnings": {},
+    "verification": {
+      "channelId": "",
+      "roleId": "",
+      "messageId": "",
+      "enabled": false
+    },
+    "modLog": {
+      "channelId": ""
+    },
+    "tempBans": {},
+    "autoNick": {
+      "enabled": false,
+      "template": "",
+      "roles": {}
+    }
+  }
+}

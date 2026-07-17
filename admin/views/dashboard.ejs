@@ -19,24 +19,15 @@
     .nav .right .status .dot.off { background:#ef4444; }
     .nav .right a { color:#8b826e;text-decoration:none;font-size:13px;transition:color 0.15s; }
     .nav .right a:hover { color:#fff; }
-    .nav .right .badge { display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;background:rgba(255,255,255,0.04);border-radius:20px;font-size:13px;color:#d4d4d8; }
-    .nav .right .badge img { width:22px;height:22px;border-radius:50%; }
 
     .hero { position:relative;z-index:1;text-align:center;padding:40px 20px 20px; }
-    .hero h1 { font-size:22px;font-weight:700;color:#fff; }
-    .hero p { color:#8b826e;font-size:13px;margin-top:4px; }
+    .hero h1 { font-size:22px;font-weight:700;color:#fff;margin-bottom:4px; }
+    .hero p { color:#8b826e;font-size:13px; }
 
-    .stats { position:relative;z-index:1;display:flex;gap:10px;justify-content:center;padding:0 40px 24px;max-width:700px;margin:0 auto;flex-wrap:wrap; }
-    .stat { flex:1;min-width:100px;background:rgba(24,24,27,0.5);border:1px solid rgba(255,255,255,0.04);border-radius:8px;padding:14px 16px;text-align:center; }
-    .stat .num { font-size:20px;font-weight:700;color:#fff; }
+    .stats { position:relative;z-index:1;display:flex;gap:10px;justify-content:center;padding:0 40px 24px;max-width:800px;margin:0 auto;flex-wrap:wrap; }
+    .stat { flex:1;min-width:120px;background:rgba(24,24,27,0.5);border:1px solid rgba(255,255,255,0.04);border-radius:8px;padding:16px;text-align:center; }
+    .stat .num { font-size:24px;font-weight:700;color:#fff; }
     .stat .label { font-size:10px;color:#8b826e;margin-top:2px;text-transform:uppercase;letter-spacing:0.5px; }
-
-    .grid { position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;padding:0 40px 40px;max-width:900px;margin:0 auto; }
-    .card { background:rgba(24,24,27,0.5);border:1px solid rgba(255,255,255,0.04);border-radius:8px;padding:16px;text-decoration:none;transition:all 0.15s; }
-    .card:hover { border-color:rgba(201,168,76,0.3);background:rgba(30,30,35,0.7);transform:translateY(-1px); }
-    .card .label { font-size:11px;color:#8b826e;text-transform:uppercase;letter-spacing:0.5px; }
-    .card .value { font-size:28px;font-weight:700;color:#fff;margin-top:4px; }
-    .card .sub { font-size:12px;color:#52525b;margin-top:4px; }
 
     .vdr-link { position:relative;z-index:1;text-align:center;padding:0 40px 40px; }
     .vdr-link a { display:inline-block;padding:10px 24px;background:#c9a84c;color:#0f1a2e;border-radius:6px;font-weight:600;text-decoration:none;font-size:14px; }
@@ -47,51 +38,27 @@
   <div class="nav">
     <a href="/" class="logo">虛境<span>民主共和國</span></a>
     <div class="right">
-      <span class="status"><span class="dot <%= online ? 'on' : 'off' %>"></span><%= online ? '在線' : '離線' %></span>
-      <a href="/cmd">指令</a>
-      <a href="/logs">日誌</a>
-      <a href="/analytics">分析</a>
-      <a href="/announce">公告</a>
+      <span class="status"><span class="dot on"></span>在線</span>
       <a href="/logout">登出</a>
     </div>
   </div>
 
   <div class="hero">
     <h1>國家管理控制臺</h1>
-    <p><strong><%= totalUsers.toLocaleString() %></strong> 位公民 · <strong><%= commands %></strong> 個指令 · 延遲 <strong><%= ping %>ms</strong></p>
+    <p><%= commands %> 個指令 · 延遲 <%= ping %>ms</p>
   </div>
 
   <div class="stats">
-    <div class="stat"><div class="num"><%= guilds.length %></div><div class="label">伺服器</div></div>
-    <div class="stat"><div class="num"><%= commands %></div><div class="label">指令</div></div>
+    <div class="stat"><div class="num"><%= vdrStats.citizens %></div><div class="label">公民</div></div>
+    <div class="stat"><div class="num"><%= vdrStats.decrees %></div><div class="label">總統令</div></div>
+    <div class="stat"><div class="num"><%= vdrStats.allies %></div><div class="label">邦交國</div></div>
+    <div class="stat"><div class="num"><%= vdrStats.treasury.toLocaleString() %></div><div class="label">國庫</div></div>
+    <div class="stat"><div class="num"><%= vdrStats.transactions %></div><div class="label">交易</div></div>
     <div class="stat"><div class="num"><%= ping %>ms</div><div class="label">延遲</div></div>
-    <div class="stat"><div class="num"><%= uptimeFormatted %></div><div class="label">運行時間</div></div>
-    <div class="stat"><div class="num"><%= nodeVersion %></div><div class="label">Node.js</div></div>
   </div>
 
   <div class="vdr-link">
-    <a href="/vdr">📊 前往國家資料儀表板</a>
-  </div>
-
-  <div class="hero" style="padding-bottom:12px">
-    <p style="font-size:12px;color:#52525b">管理中的伺服器</p>
-  </div>
-
-  <div class="grid">
-    <% if (guilds.length === 0) { %>
-      <div style="grid-column:1/-1;text-align:center;padding:40px;color:#52525b">尚未加入任何伺服器</div>
-    <% } %>
-    <% for (const g of guilds) { %>
-      <a href="/server/<%= g.id %>" class="card">
-        <div style="display:flex;align-items:center;gap:12px">
-          <% if (g.icon) { %><img src="<%= g.icon %>" style="width:36px;height:36px;border-radius:6px"><% } else { %><div style="width:36px;height:36px;border-radius:6px;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;font-size:14px">#</div><% } %>
-          <div style="flex:1;min-width:0">
-            <div style="font-size:14px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><%= g.name %></div>
-            <div style="font-size:11px;color:#52525b;margin-top:1px"><%= g.memberCount %> 人</div>
-          </div>
-        </div>
-      </a>
-    <% } %>
+    <a href="/vdr">📊 國家資料儀表板</a>
   </div>
 </body>
 </html>
