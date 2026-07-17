@@ -8,10 +8,7 @@ function startAdmin(client) {
   const app = express();
   const PORT = process.env.ADMIN_PORT || 3001;
 
-  if (!config.discord.clientSecret) {
-    logger.error('未設定 DISCORD_CLIENT_SECRET，管理員後臺啟動終止');
-    return;
-  }
+  const useDiscordAuth = !!config.discord.clientSecret;
 
   app.set('view engine', 'ejs');
   app.set('views', path.join(__dirname, 'views'));
@@ -37,14 +34,28 @@ function startAdmin(client) {
 
   app.get('/login', (req, res) => {
     if (req.session.authenticated) return res.redirect('/dashboard');
-    const url = `${DISCORD_API}/oauth2/authorize?client_id=${config.discord.clientId}&redirect_uri=${encodeURIComponent(config.discord.redirectUri)}&response_type=code&scope=identify+guilds&prompt=none`;
-    res.render('login', { error: null, discordUrl: url });
+    if (useDiscordAuth) {
+      const url = `${DISCORD_API}/oauth2/authorize?client_id=${config.discord.clientId}&redirect_uri=${encodeURIComponent(config.discord.redirectUri)}&response_type=code&scope=identify+guilds&prompt=none`;
+      return res.render('login', { error: null, discordUrl: url, useDiscord: true });
+    }
+    res.render('login', { error: null, discordUrl: '#', useDiscord: false });
+  });
+
+  app.post('/login', (req, res) => {
+    if (useDiscordAuth) return res.redirect('/login');
+    const { username, password } = req.body;
+    if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
+      req.session.authenticated = true;
+      return res.redirect('/dashboard');
+    }
+    res.render('login', { error: '帳號或密碼錯誤', discordUrl: '#', useDiscord: false });
   });
 
   app.get('/auth/callback', async (req, res) => {
+    if (!useDiscordAuth) return res.redirect('/login');
     const { code, error: errParam } = req.query;
     if (errParam || !code) {
-      return res.render('login', { error: 'Discord 登入失敗', discordUrl: '#' });
+      return res.render('login', { error: 'Discord 登入失敗', discordUrl: '#', useDiscord: true });
     }
     try {
       const axios = require('axios');
@@ -89,7 +100,7 @@ function startAdmin(client) {
       }
 
       if (!isAdmin) {
-        return res.render('login', { error: '你沒有管理員權限', discordUrl: '#' });
+        return res.render('login', { error: '你沒有管理員權限', discordUrl: '#', useDiscord: true });
       }
 
       req.session.authenticated = true;
@@ -99,7 +110,7 @@ function startAdmin(client) {
       res.redirect(returnTo);
     } catch (err) {
       logger.error('Discord OAuth2 錯誤:', err.message);
-      res.render('login', { error: '認證失敗', discordUrl: '#' });
+      res.render('login', { error: '認證失敗', discordUrl: '#', useDiscord: true });
     }
   });
 
