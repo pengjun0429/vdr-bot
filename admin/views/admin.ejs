@@ -320,7 +320,7 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
       <table>
         <tr><th style="width:40px">#</th><th>?迂</th><th>ID</th><th>憿</th><th>鈭箸</th><th>隡箸???/th></tr>
         <% for (let i = 0; i < roles.length; i++) { %>
-        <tr>
+        <tr data-pos="<%= roles[i].position %>" data-name="<%= roles[i].name %>">
           <td style="text-align:center;font-weight:700;color:<%= i < 3 ? '#c9a84c' : '#8b826e' %>"><%= i + 1 %></td>
           <td><span style="<%= roles[i].color ? 'color:'+roles[i].color : '' %>;font-weight:600"><%= roles[i].name %></span></td>
           <td style="font-size:11px;color:#8b826e"><%= roles[i].id %></td>
@@ -476,6 +476,23 @@ function filterTable(val) {
 }
 // Auto-hide alerts
 setTimeout(() => { document.querySelectorAll('.alert').forEach(el => el.style.display = 'none') }, 4000);
+</script>
+
+<script>
+function sortRoles(mode) {
+  const table = document.getElementById('roleTable');
+  if (!table) return;
+  const rows = Array.from(table.querySelectorAll('tr:not(:first-child)'));
+  const sorted = rows.sort((a, b) => {
+    if (mode === 'position') return parseInt(b.dataset.pos) - parseInt(a.dataset.pos);
+    return a.dataset.name.localeCompare(b.dataset.name, 'zh');
+  });
+  sorted.forEach((r, i) => {
+    table.appendChild(r);
+    const num = r.cells[0];
+    if (num) { num.textContent = i + 1; num.style.color = i < 3 ? '#c9a84c' : '#8b826e'; }
+  });
+}
 </script>
 </body>
 </html>
