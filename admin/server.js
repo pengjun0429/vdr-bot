@@ -8,7 +8,7 @@ function startAdmin(client) {
   const app = express();
   const PORT = process.env.ADMIN_PORT || 3001;
 
-  const useDiscordAuth = !!config.discord.clientSecret;
+  const useDiscordAuth = false;
 
   app.set('view engine', 'ejs');
   app.set('views', path.join(__dirname, 'views'));
