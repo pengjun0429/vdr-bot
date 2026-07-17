@@ -311,6 +311,36 @@ function startAdmin(client) {
     req.session.alert = null;
   });
 
+  app.post('/admin/roles/assign', requireAuth, async (req, res) => {
+    const { roleId, userId, action } = req.body;
+    if (!roleId || !userId) {
+      req.session.alert = { type: 'error', text: '請選擇身分組和輸入使用者 ID' };
+      return res.redirect('/admin/roles');
+    }
+    try {
+      let done = false;
+      for (const g of client.guilds.cache.values()) {
+        const member = await g.members.fetch(userId).catch(() => null);
+        if (!member) continue;
+        const role = g.roles.cache.get(roleId);
+        if (!role) continue;
+        if (action === 'add') {
+          await member.roles.add(roleId);
+          req.session.alert = { type: 'success', text: '已將 ' + role.name + ' 指派給 ' + member.user.tag };
+        } else {
+          await member.roles.remove(roleId);
+          req.session.alert = { type: 'success', text: '已從 ' + member.user.tag + ' 移除 ' + role.name };
+        }
+        done = true;
+        break;
+      }
+      if (!done) req.session.alert = { type: 'error', text: '找不到該使用者或身分組' };
+    } catch (err) {
+      req.session.alert = { type: 'error', text: '操作失敗：' + err.message };
+    }
+    res.redirect('/admin/roles');
+  });
+
   app.get('/admin/welcome', requireAuth, (req, res) => {
     const vdr = getVdr();
     const db = vdr.get();

@@ -298,18 +298,32 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <% if (page === 'roles') { %>
     <% if (alert) { %><div class="alert alert-<%= alert.type %>"><%= alert.text %></div><% } %>
     <div class="card">
+      <h2>指派身分組給成員</h2>
+      <form method="POST" action="/admin/roles/assign" style="display:flex;gap:8px;flex-wrap:wrap">
+        <select name="roleId" required style="flex:1;min-width:140px">
+          <option value="">-- 選擇身分組 --</option>
+          <% for (const r of roles) { %>
+          <option value="<%= r.id %>" style="<%= r.color ? 'color:'+r.color : '' %>"><%= r.name %>（<%= r.guild %>）</option>
+          <% } %>
+        </select>
+        <input name="userId" placeholder="Discord 使用者 ID" required style="flex:1;min-width:140px">
+        <button class="btn btn-gold" type="submit" name="action" value="add">＋ 新增</button>
+        <button class="btn btn-danger" type="submit" name="action" value="remove">－ 移除</button>
+      </form>
+    </div>
+    <div class="card">
       <h2>所有身分組 <span class="count"><%= roles.length %> 個</span></h2>
       <% if (roles.length === 0) { %><div class="empty">無身分組資料</div><% } %>
       <% if (roles.length > 0) { %>
       <table>
-        <tr><th>ID</th><th>名稱</th><th>顏色</th><th>人數</th><th>位置</th></tr>
+        <tr><th>ID</th><th>名稱</th><th>顏色</th><th>人數</th><th>伺服器</th></tr>
         <% for (const r of roles) { %>
         <tr>
           <td style="font-size:11px;color:#8b826e"><%= r.id %></td>
           <td><span style="<%= r.color ? 'color:'+r.color : '' %>;font-weight:600"><%= r.name %></span></td>
-          <td><span style="display:inline-block;width:16px;height:16px;border-radius:3px;background:<%= r.color || '#999' %>;vertical-align:middle"></span> <%= r.color || '無' %></td>
+          <td><span style="display:inline-block;width:16px;height:16px;border-radius:3px;background:<%= r.color || '#999' %>;vertical-align:middle"></span></td>
           <td><%= r.count %></td>
-          <td><%= r.position %></td>
+          <td><%= r.guild %></td>
         </tr>
         <% } %>
       </table>
