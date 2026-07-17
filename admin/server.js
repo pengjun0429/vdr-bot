@@ -69,19 +69,22 @@ function startAdmin(client) {
       });
       const guilds = guildsRes.data;
 
-      let isAdmin = false;
-      for (const g of client.guilds.cache.values()) {
-        const memberGuild = guilds.find(ug => ug.id === g.id);
-        if (!memberGuild) continue;
-        const permissions = BigInt(memberGuild.permissions);
-        if ((permissions & 0x8n) === 0x8n || memberGuild.owner) {
-          isAdmin = true;
-          break;
-        }
-        const member = await g.members.fetch(user.id).catch(() => null);
-        if (member && (member.permissions.has(0x8n) || g.ownerId === user.id)) {
-          isAdmin = true;
-          break;
+      const adminUserIds = (process.env.ADMIN_USER_IDS || '').split(',').filter(Boolean);
+      let isAdmin = adminUserIds.includes(user.id);
+      if (!isAdmin) {
+        for (const g of client.guilds.cache.values()) {
+          const memberGuild = guilds.find(ug => ug.id === g.id);
+          if (!memberGuild) continue;
+          const permissions = BigInt(memberGuild.permissions);
+          if ((permissions & 0x8n) === 0x8n || memberGuild.owner) {
+            isAdmin = true;
+            break;
+          }
+          const member = await g.members.fetch(user.id).catch(() => null);
+          if (member && (member.permissions.has(0x8n) || g.ownerId === user.id)) {
+            isAdmin = true;
+            break;
+          }
         }
       }
 
