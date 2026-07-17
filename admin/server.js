@@ -61,16 +61,19 @@ function startAdmin(client) {
   app.get('/dashboard', requireAuth, (req, res) => {
     const vdr = require('../src/services/vdr-data');
     const db = vdr.get();
+    const citizens = Object.entries(db.citizens).map(([id, c]) => ({ id, ...c }));
     res.render('dashboard', {
       online: true,
       ping: client.ws.ping,
       commands: client.commands.size,
       vdrStats: {
-        citizens: Object.keys(db.citizens).length,
+        citizens: citizens.length,
         decrees: db.decrees.length,
+        announcements: db.announcements ? db.announcements.length : 0,
         allies: db.allies.length,
         treasury: db.economy.treasury,
         transactions: db.economy.transactions.length,
+        recentCitizens: citizens.sort((a, b) => new Date(b.registeredAt) - new Date(a.registeredAt)).slice(0, 5),
       },
     });
   });
