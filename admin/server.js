@@ -14,6 +14,7 @@ function startAdmin(client) {
   app.set('views', path.join(__dirname, 'views'));
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
+  app.set('trust proxy', 1);
   app.use(session({
     secret: process.env.SESSION_SECRET || require('crypto').randomBytes(32).toString('hex'),
     resave: false,
@@ -35,7 +36,8 @@ function startAdmin(client) {
   app.get('/login', (req, res) => {
     if (req.session.authenticated) return res.redirect('/dashboard');
     if (useDiscordAuth) {
-      const redirectUri = req.protocol + '://' + req.get('host') + '/auth/callback';
+      const proto = req.headers['x-forwarded-proto'] || req.protocol;
+      const redirectUri = proto + '://' + req.get('host') + '/auth/callback';
       const url = `${DISCORD_API}/oauth2/authorize?client_id=${config.discord.clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify+guilds`;
       return res.render('login', { error: null, discordUrl: url, useDiscord: true });
     }
