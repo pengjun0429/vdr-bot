@@ -35,7 +35,7 @@ function startAdmin(client) {
   app.get('/login', (req, res) => {
     if (req.session.authenticated) return res.redirect('/dashboard');
     if (useDiscordAuth) {
-      const redirectUri = config.discord.redirectUri || (req.protocol + '://' + req.get('host') + '/auth/callback');
+      const redirectUri = req.protocol + '://' + req.get('host') + '/auth/callback';
       const url = `${DISCORD_API}/oauth2/authorize?client_id=${config.discord.clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify+guilds`;
       return res.render('login', { error: null, discordUrl: url, useDiscord: true });
     }
@@ -66,7 +66,7 @@ function startAdmin(client) {
           client_secret: config.discord.clientSecret,
           grant_type: 'authorization_code',
           code,
-          redirect_uri: config.discord.redirectUri || (req.protocol + '://' + req.get('host') + '/auth/callback'),
+          redirect_uri: req.protocol + '://' + req.get('host') + '/auth/callback',
         }).toString(),
         { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
       );
