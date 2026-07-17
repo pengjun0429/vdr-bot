@@ -86,6 +86,7 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <a href="/admin/announce" class="<%= page === 'announce' ? 'active' : '' %>">📢 <span>國家公告</span></a>
     <a href="/admin/economy" class="<%= page === 'economy' ? 'active' : '' %>">💰 <span>經濟管理</span></a>
     <a href="/admin/diplomacy" class="<%= page === 'diplomacy' ? 'active' : '' %>">🌐 <span>外交邦交</span></a>
+    <a href="/admin/welcome" class="<%= page === 'welcome' ? 'active' : '' %>">👋 <span>歡迎設定</span></a>
     <a href="/admin/servers" class="<%= page === 'servers' ? 'active' : '' %>">🖥️ <span>伺服器</span></a>
     <a href="/admin/logs" class="<%= page === 'logs' ? 'active' : '' %>">📋 <span>系統日誌</span></a>
   </nav>
@@ -293,6 +294,30 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <% } %>
 
     <!-- ===================== SERVERS ===================== -->
+    <% if (page === 'welcome') { %>
+    <% if (alert) { %><div class="alert alert-<%= alert.type %>"><%= alert.text %></div><% } %>
+    <div class="card">
+      <h2>歡迎訊息設定</h2>
+      <form method="POST" action="/admin/welcome/save">
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:8px">
+            <input type="checkbox" name="enabled" value="1" <%= welcome.enabled ? 'checked' : '' %> style="width:auto">
+            啟用歡迎訊息
+          </label>
+        </div>
+        <div class="form-group"><label>發送頻道</label>
+          <select name="channelId">
+            <option value="">-- 系統預設頻道 --</option>
+            <% for (const ch of channels) { %>
+            <option value="<%= ch.id %>" <%= welcome.channelId === ch.id ? 'selected' : '' %>><%= ch.name %></option>
+            <% } %>
+          </select>
+        </div>
+        <button class="btn btn-gold" type="submit">💾 儲存設定</button>
+      </form>
+    </div>
+    <% } %>
+
     <% if (page === 'servers') { %>
     <div class="card">
       <h2>已加入的伺服器 <span class="count"><%= guilds.length %> 個</span></h2>

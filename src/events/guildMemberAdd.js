@@ -6,6 +6,7 @@ module.exports = {
   async execute(member) {
     try {
       const db = vdr.get();
+      if (!db.welcome?.enabled) return;
       const n = db.nation;
       const welcomeEmbed = new EmbedBuilder()
         .setColor(0x1a2744)
@@ -18,7 +19,8 @@ module.exports = {
         )
         .setFooter({ text: '虛境民主共和國 技術發展部' })
         .setTimestamp();
-      const channel = member.guild.systemChannel;
+      const channelId = db.welcome?.channelId;
+      const channel = channelId ? member.guild.channels.cache.get(channelId) : member.guild.systemChannel;
       if (channel) channel.send({ embeds: [welcomeEmbed] });
     } catch (err) {
       logger.warn('VDR 歡迎訊息錯誤:', err.message);

@@ -278,6 +278,31 @@ function startAdmin(client) {
     res.redirect('/admin/diplomacy');
   });
 
+  app.get('/admin/welcome', requireAuth, (req, res) => {
+    const vdr = getVdr();
+    const db = vdr.get();
+    const channels = [];
+    for (const g of client.guilds.cache.values()) {
+      for (const c of g.channels.cache.values()) {
+        if (c.type === 0) channels.push({ id: c.id, name: `#${c.name}（${g.name}）` });
+      }
+    }
+    res.render('admin', { ...baseData(), page: 'welcome', pageTitle: '歡迎設定', user: req.session.user,
+      welcome: db.welcome || { enabled: true, channelId: '' }, channels,
+      alert: req.session.alert || null,
+    });
+    req.session.alert = null;
+  });
+
+  app.post('/admin/welcome/save', requireAuth, (req, res) => {
+    const vdr = getVdr();
+    const db = vdr.get();
+    db.welcome = { enabled: req.body.enabled === '1', channelId: req.body.channelId || '' };
+    vdr.save();
+    req.session.alert = { type: 'success', text: '歡迎設定已儲存' };
+    res.redirect('/admin/welcome');
+  });
+
   app.get('/admin/servers', requireAuth, (req, res) => {
     const guilds = [...client.guilds.cache.values()].map(g => ({
       id: g.id, name: g.name, members: g.memberCount,
