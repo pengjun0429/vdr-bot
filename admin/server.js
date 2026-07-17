@@ -58,7 +58,7 @@ function startAdmin(client) {
     if (!useDiscordAuth) return res.redirect('/login');
     const { code, error: errParam } = req.query;
     if (errParam || !code) {
-      return res.render('login', { error: 'Discord 登入失敗', discordUrl: '#', useDiscord: true });
+      return res.render('login', { error: 'Discord 登入失敗：' + (errParam || '無授權碼'), discordUrl: '#', useDiscord: true });
     }
     try {
       const axios = require('axios');
