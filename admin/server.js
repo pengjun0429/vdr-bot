@@ -100,7 +100,44 @@ function startAdmin(client) {
   app.get('/admin/decrees', requireAuth, (req, res) => {
     const vdr = getVdr();
     const db = vdr.get();
-    res.render('admin', { ...baseData(), page: 'decrees', pageTitle: '總統令', decrees: [...db.decrees].reverse() });
+    const channels = [];
+    for (const g of client.guilds.cache.values()) {
+      for (const c of g.channels.cache.values()) {
+        if (c.type === 0) channels.push({ id: c.id, name: `#${c.name}（${g.name}）` });
+      }
+    }
+    res.render('admin', { ...baseData(), page: 'decrees', pageTitle: '總統令',
+      decrees: [...db.decrees].reverse(),
+      channels,
+      alert: req.session.alert || null,
+    });
+    req.session.alert = null;
+  });
+
+  app.post('/admin/decrees/create', requireAuth, (req, res) => {
+    const vdr = getVdr();
+    const { title, content, channelId } = req.body;
+    if (!title || !content) {
+      req.session.alert = { type: 'error', text: '請填寫標題和內容' };
+      return res.redirect('/admin/decrees');
+    }
+    const decree = vdr.addDecree('admin', '管理員', title, content);
+    if (channelId) {
+      const { EmbedBuilder } = require('discord.js');
+      const channel = client.channels.cache.get(channelId);
+      if (channel) {
+        const embed = new EmbedBuilder()
+          .setColor(0xc9a84c)
+          .setTitle(`總統令 第 ${decree.id} 號`)
+          .setDescription(`**${title}**`)
+          .addFields({ name: '內容', value: content, inline: false })
+          .setFooter({ text: '發布者：管理員 ｜ 虛境民主共和國總統府' })
+          .setTimestamp();
+        channel.send({ embeds: [embed] }).catch(() => {});
+      }
+    }
+    req.session.alert = { type: 'success', text: `總統令 #${decree.id} 已發布` };
+    res.redirect('/admin/decrees');
   });
 
   app.get('/admin/announce', requireAuth, (req, res) => {
