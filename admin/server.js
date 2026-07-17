@@ -299,6 +299,18 @@ function startAdmin(client) {
     res.redirect('/admin/diplomacy');
   });
 
+  app.get('/admin/roles', requireAuth, (req, res) => {
+    const roles = [];
+    for (const g of client.guilds.cache.values()) {
+      for (const r of g.roles.cache.sort((a, b) => b.position - a.position).values()) {
+        if (r.name === '@everyone') continue;
+        roles.push({ id: r.id, name: r.name, color: r.hexColor === '#000000' ? null : r.hexColor, count: r.members.size, position: r.position, guild: g.name });
+      }
+    }
+    res.render('admin', { ...baseData(), page: 'roles', pageTitle: '身分組管理', roles, user: req.session.user, alert: req.session.alert || null });
+    req.session.alert = null;
+  });
+
   app.get('/admin/welcome', requireAuth, (req, res) => {
     const vdr = getVdr();
     const db = vdr.get();

@@ -86,6 +86,7 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <a href="/admin/announce" class="<%= page === 'announce' ? 'active' : '' %>">📢 <span>國家公告</span></a>
     <a href="/admin/economy" class="<%= page === 'economy' ? 'active' : '' %>">💰 <span>經濟管理</span></a>
     <a href="/admin/diplomacy" class="<%= page === 'diplomacy' ? 'active' : '' %>">🌐 <span>外交邦交</span></a>
+    <a href="/admin/roles" class="<%= page === 'roles' ? 'active' : '' %>">🎭 <span>身分組管理</span></a>
     <a href="/admin/welcome" class="<%= page === 'welcome' ? 'active' : '' %>">👋 <span>歡迎設定</span></a>
     <a href="/admin/servers" class="<%= page === 'servers' ? 'active' : '' %>">🖥️ <span>伺服器</span></a>
     <a href="/admin/logs" class="<%= page === 'logs' ? 'active' : '' %>">📋 <span>系統日誌</span></a>
@@ -294,6 +295,28 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <% } %>
 
     <!-- ===================== SERVERS ===================== -->
+    <% if (page === 'roles') { %>
+    <% if (alert) { %><div class="alert alert-<%= alert.type %>"><%= alert.text %></div><% } %>
+    <div class="card">
+      <h2>所有身分組 <span class="count"><%= roles.length %> 個</span></h2>
+      <% if (roles.length === 0) { %><div class="empty">無身分組資料</div><% } %>
+      <% if (roles.length > 0) { %>
+      <table>
+        <tr><th>ID</th><th>名稱</th><th>顏色</th><th>人數</th><th>位置</th></tr>
+        <% for (const r of roles) { %>
+        <tr>
+          <td style="font-size:11px;color:#8b826e"><%= r.id %></td>
+          <td><span style="<%= r.color ? 'color:'+r.color : '' %>;font-weight:600"><%= r.name %></span></td>
+          <td><span style="display:inline-block;width:16px;height:16px;border-radius:3px;background:<%= r.color || '#999' %>;vertical-align:middle"></span> <%= r.color || '無' %></td>
+          <td><%= r.count %></td>
+          <td><%= r.position %></td>
+        </tr>
+        <% } %>
+      </table>
+      <% } %>
+    </div>
+    <% } %>
+
     <% if (page === 'welcome') { %>
     <% if (alert) { %><div class="alert alert-<%= alert.type %>"><%= alert.text %></div><% } %>
     <div class="card">
