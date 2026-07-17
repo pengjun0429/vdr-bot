@@ -68,7 +68,7 @@ function startAdmin(client) {
           client_secret: config.discord.clientSecret,
           grant_type: 'authorization_code',
           code,
-          redirect_uri: req.protocol + '://' + req.get('host') + '/auth/callback',
+          redirect_uri: (req.headers['x-forwarded-proto'] || req.protocol) + '://' + req.get('host') + '/auth/callback',
         }).toString(),
         { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
       );
