@@ -1,6 +1,6 @@
 {
   "name": "vdr-bot",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "VDR 政府服務機器人 - 虛境民主共和國",
   "private": true,
   "main": "src/index.js",
