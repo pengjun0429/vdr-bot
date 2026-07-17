@@ -32,10 +32,15 @@ function startAdmin(client) {
 
   const DISCORD_API = 'https://discord.com/api/v10';
 
+  function getRedirectUri(req) {
+    return config.discord.redirectUri || req.protocol + '://' + req.get('host') + '/auth/callback';
+  }
+
   app.get('/login', (req, res) => {
     if (req.session.authenticated) return res.redirect('/dashboard');
     if (useDiscordAuth) {
-      const url = `${DISCORD_API}/oauth2/authorize?client_id=${config.discord.clientId}&redirect_uri=${encodeURIComponent(config.discord.redirectUri)}&response_type=code&scope=identify+guilds`;
+      const redirectUri = getRedirectUri(req);
+      const url = `${DISCORD_API}/oauth2/authorize?client_id=${config.discord.clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify+guilds`;
       return res.render('login', { error: null, discordUrl: url, useDiscord: true });
     }
     res.render('login', { error: null, discordUrl: '#', useDiscord: false });
@@ -65,7 +70,7 @@ function startAdmin(client) {
           client_secret: config.discord.clientSecret,
           grant_type: 'authorization_code',
           code,
-          redirect_uri: config.discord.redirectUri,
+          redirect_uri: redirectUri,
         }).toString(),
         { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
       );
