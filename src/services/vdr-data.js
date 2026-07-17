@@ -133,6 +133,7 @@ function registerCitizen(userId, data) {
     wallet: 100,
   };
   save();
+  sheetAppend('registerCitizen', { userId, name: data.name, region: data.region, wallet: 100 });
   return db.citizens[userId];
 }
 
@@ -153,6 +154,7 @@ function addDecree(authorId, authorName, title, content) {
   };
   db.decrees.push(decree);
   save();
+  sheetAppend('addDecree', { id: decree.id, title, content, authorName });
   return decree;
 }
 
@@ -167,7 +169,17 @@ function transfer(fromId, toId, amount, note) {
   const tx = { from: fromId, to: toId, amount, note: note || '', at: new Date().toISOString() };
   db.economy.transactions.push(tx);
   save();
+  sheetAppend('addTransaction', { from: fromId, to: toId, amount, note: note || '' });
   return { from, to, tx };
+}
+
+function sheetAppend(action, data) {
+  const sheetUrl = process.env.VDR_SHEET_URL;
+  const sheetToken = process.env.VDR_SHEET_TOKEN;
+  if (!sheetUrl || !sheetToken) return;
+  const axios = require('axios');
+  axios.post(sheetUrl, { token: sheetToken, action, ...data }, { timeout: 5000 })
+    .catch(() => {});
 }
 
 async function syncToSheet() {
