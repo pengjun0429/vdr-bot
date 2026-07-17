@@ -364,6 +364,29 @@ function startAdmin(client) {
     res.redirect('/admin/autorole');
   });
 
+  app.get('/admin/airoles', requireAuth, (req, res) => {
+    const vdr = require('../src/services/vdr-data');
+    const db = vdr.get();
+    const config = db.aiRole || { enabled: false, keywords: {} };
+    res.render('admin', { ...baseData(), page: 'airoles', pageTitle: 'AI 身分組', config, user: req.session.user, alert: req.session.alert || null, hasApi: !!process.env.AI_API_KEY });
+    req.session.alert = null;
+  });
+
+  app.post('/admin/airoles/save', requireAuth, (req, res) => {
+    const vdr = require('../src/services/vdr-data');
+    const db = vdr.get();
+    const keywords = {};
+    for (const [key, val] of Object.entries(req.body)) {
+      if (key.startsWith('kw_') && val.trim()) {
+        keywords[key.slice(3)] = val.split(',').map(w => w.trim()).filter(Boolean);
+      }
+    }
+    db.aiRole = { enabled: req.body.enabled === '1', keywords };
+    vdr.save();
+    req.session.alert = { type: 'success', text: 'AI 身分組設定已儲存' };
+    res.redirect('/admin/airoles');
+  });
+
   app.get('/admin/welcome', requireAuth, (req, res) => {
     const vdr = getVdr();
     const db = vdr.get();
