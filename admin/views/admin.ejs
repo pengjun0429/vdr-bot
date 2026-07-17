@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><%= pageTitle %> | VDR 管理後臺</title>
+<title><%= pageTitle %> | VDR 蝞∠?敺</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Noto Sans TC',sans-serif;background:#f4f2ed;color:#1e1e2a;display:flex;min-height:100vh}
@@ -78,48 +78,48 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
 </head>
 <body>
 <div class="sidebar">
-  <div class="title">虛境<span>共和國</span></div>
+  <div class="title">??<span>?勗???/span></div>
   <nav>
-    <a href="/dashboard" class="<%= page === 'dashboard' ? 'active' : '' %>">📊 <span>控制臺</span></a>
-    <a href="/admin/citizens" class="<%= page === 'citizens' ? 'active' : '' %>">👥 <span>公民管理</span></a>
-    <a href="/admin/decrees" class="<%= page === 'decrees' ? 'active' : '' %>">📜 <span>總統令</span></a>
-    <a href="/admin/announce" class="<%= page === 'announce' ? 'active' : '' %>">📢 <span>國家公告</span></a>
-    <a href="/admin/economy" class="<%= page === 'economy' ? 'active' : '' %>">💰 <span>經濟管理</span></a>
-    <a href="/admin/diplomacy" class="<%= page === 'diplomacy' ? 'active' : '' %>">🌐 <span>外交邦交</span></a>
-    <a href="/admin/roles" class="<%= page === 'roles' ? 'active' : '' %>">🎭 <span>身分組管理</span></a>
-    <a href="/admin/autorole" class="<%= page === 'autorole' ? 'active' : '' %>">🤖 <span>自動身分組</span></a>
-    <a href="/admin/welcome" class="<%= page === 'welcome' ? 'active' : '' %>">👋 <span>歡迎設定</span></a>
-    <a href="/admin/servers" class="<%= page === 'servers' ? 'active' : '' %>">🖥️ <span>伺服器</span></a>
-    <a href="/admin/logs" class="<%= page === 'logs' ? 'active' : '' %>">📋 <span>系統日誌</span></a>
+    <a href="/dashboard" class="<%= page === 'dashboard' ? 'active' : '' %>">?? <span>?批??/span></a>
+    <a href="/admin/citizens" class="<%= page === 'citizens' ? 'active' : '' %>">? <span>?祆?蝞∠?</span></a>
+    <a href="/admin/decrees" class="<%= page === 'decrees' ? 'active' : '' %>">?? <span>蝮賜絞隞?/span></a>
+    <a href="/admin/announce" class="<%= page === 'announce' ? 'active' : '' %>">? <span>?振?砍?</span></a>
+    <a href="/admin/economy" class="<%= page === 'economy' ? 'active' : '' %>">? <span>蝬?蝞∠?</span></a>
+    <a href="/admin/diplomacy" class="<%= page === 'diplomacy' ? 'active' : '' %>">?? <span>憭漱?虫漱</span></a>
+    <a href="/admin/roles" class="<%= page === 'roles' ? 'active' : '' %>">? <span>頨怠?蝯恣??/span></a>
+    <a href="/admin/autorole" class="<%= page === 'autorole' ? 'active' : '' %>">?? <span>?芸?頨怠?蝯?/span></a>
+    <a href="/admin/welcome" class="<%= page === 'welcome' ? 'active' : '' %>">?? <span>甇∟?閮剖?</span></a>
+    <a href="/admin/servers" class="<%= page === 'servers' ? 'active' : '' %>">?儭?<span>隡箸???/span></a>
+    <a href="/admin/logs" class="<%= page === 'logs' ? 'active' : '' %>">?? <span>蝟餌絞?亥?</span></a>
   </nav>
-  <div class="footer">v<%= version %> | <a href="/logout" style="color:#8b826e;text-decoration:none">登出</a></div>
+  <div class="footer">v<%= version %> | <a href="/logout" style="color:#8b826e;text-decoration:none">?餃</a></div>
 </div>
 
 <div class="main">
   <div class="topbar">
     <div class="bread"><strong><%= pageTitle %></strong></div>
-    <div class="status"><span class="dot on"></span> 在線 · <%= ping %>ms</div>
+    <div class="status"><span class="dot on"></span> ?函? 繚 <%= ping %>ms</div>
   </div>
   <div class="content">
 
     <!-- ===================== DASHBOARD ===================== -->
     <% if (page === 'dashboard') { %>
     <div class="stats">
-      <div class="stat-box"><div class="num"><%= d.citizens %></div><div class="label">公民</div></div>
-      <div class="stat-box"><div class="num"><%= d.decrees %></div><div class="label">總統令</div></div>
-      <div class="stat-box"><div class="num"><%= d.announcements %></div><div class="label">公告</div></div>
-      <div class="stat-box"><div class="num"><%= d.allies %></div><div class="label">邦交國</div></div>
-      <div class="stat-box"><div class="num"><%= Number(d.treasury).toLocaleString() %></div><div class="label">國庫</div></div>
-      <div class="stat-box"><div class="num"><%= d.txCount %></div><div class="label">交易</div></div>
-      <div class="stat-box"><div class="num"><%= d.servers %></div><div class="label">伺服器</div></div>
-      <div class="stat-box"><div class="num"><%= d.regions %></div><div class="label">行政區</div></div>
+      <div class="stat-box"><div class="num"><%= d.citizens %></div><div class="label">?祆?</div></div>
+      <div class="stat-box"><div class="num"><%= d.decrees %></div><div class="label">蝮賜絞隞?/div></div>
+      <div class="stat-box"><div class="num"><%= d.announcements %></div><div class="label">?砍?</div></div>
+      <div class="stat-box"><div class="num"><%= d.allies %></div><div class="label">?虫漱??/div></div>
+      <div class="stat-box"><div class="num"><%= Number(d.treasury).toLocaleString() %></div><div class="label">?澈</div></div>
+      <div class="stat-box"><div class="num"><%= d.txCount %></div><div class="label">鈭斗?</div></div>
+      <div class="stat-box"><div class="num"><%= d.servers %></div><div class="label">隡箸???/div></div>
+      <div class="stat-box"><div class="num"><%= d.regions %></div><div class="label">銵?</div></div>
     </div>
     <div class="card">
-      <h2>最新活動</h2>
-      <% if (d.recent.length === 0) { %><div class="empty">尚無活動紀錄</div><% } %>
+      <h2>??唳暑??/h2>
+      <% if (d.recent.length === 0) { %><div class="empty">撠瘣餃?蝝??/div><% } %>
       <% if (d.recent.length > 0) { %>
       <table>
-        <tr><th>時間</th><th>類型</th><th>內容</th></tr>
+        <tr><th>??</th><th>憿?</th><th>?批捆</th></tr>
         <% for (const r of d.recent) { %>
         <tr><td style="font-size:11px"><%= r.time %></td><td><span class="badge"><%= r.type %></span></td><td><%= r.text %></td></tr>
         <% } %>
@@ -131,14 +131,14 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <!-- ===================== CITIZENS ===================== -->
     <% if (page === 'citizens') { %>
     <div class="card">
-      <h2>公民列表 <span class="count"><%= citizens.length %> 人</span></h2>
+      <h2>?祆??” <span class="count"><%= citizens.length %> 鈭?/span></h2>
       <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="搜尋名稱或ID..." onkeyup="filterTable(this.value)">
+        <input type="text" id="searchInput" placeholder="???迂?D..." onkeyup="filterTable(this.value)">
       </div>
-      <% if (citizens.length === 0) { %><div class="empty">尚無註冊公民</div><% } %>
+      <% if (citizens.length === 0) { %><div class="empty">撠閮餃??祆?</div><% } %>
       <% if (citizens.length > 0) { %>
       <table id="dataTable">
-        <tr><th>ID</th><th>名稱</th><th>行政區</th><th>錢包</th><th>註冊時間</th></tr>
+        <tr><th>ID</th><th>?迂</th><th>銵?</th><th>?Ｗ?</th><th>閮餃???</th></tr>
         <% for (const c of citizens) { %>
         <tr>
           <td style="font-size:11px;color:#8b826e"><%= c.id %></td>
@@ -157,29 +157,29 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <% if (page === 'decrees') { %>
     <% if (alert) { %><div class="alert alert-<%= alert.type %>"><%= alert.text %></div><% } %>
     <div class="card">
-      <h2>發布總統令</h2>
+      <h2>?澆?蝮賜絞隞?/h2>
       <form method="POST" action="/admin/decrees/create">
         <div class="form-row">
-          <div class="form-group"><label>標題</label><input name="title" required></div>
-          <div class="form-group"><label>發送到頻道（選填）</label>
+          <div class="form-group"><label>璅?</label><input name="title" required></div>
+          <div class="form-group"><label>?潮?駁?嚗憛恬?</label>
             <select name="channelId">
-              <option value=""> -- 不發送 --</option>
+              <option value=""> -- 銝??--</option>
               <% for (const ch of channels) { %>
               <option value="<%= ch.id %>"><%= ch.name %></option>
               <% } %>
             </select>
           </div>
         </div>
-        <div class="form-group"><label>內容</label><textarea name="content" rows="4" required></textarea></div>
-        <button class="btn btn-gold" type="submit">📜 發布總統令</button>
+        <div class="form-group"><label>?批捆</label><textarea name="content" rows="4" required></textarea></div>
+        <button class="btn btn-gold" type="submit">?? ?澆?蝮賜絞隞?/button>
       </form>
     </div>
     <div class="card">
-      <h2>總統令列表 <span class="count"><%= decrees.length %> 筆</span></h2>
-      <% if (decrees.length === 0) { %><div class="empty">尚無總統令</div><% } %>
+      <h2>蝮賜絞隞文?銵?<span class="count"><%= decrees.length %> 蝑?/span></h2>
+      <% if (decrees.length === 0) { %><div class="empty">撠蝮賜絞隞?/div><% } %>
       <% if (decrees.length > 0) { %>
       <table>
-        <tr><th>#</th><th>標題</th><th>發布者</th><th>時間</th></tr>
+        <tr><th>#</th><th>璅?</th><th>?澆???/th><th>??</th></tr>
         <% for (const d of decrees) { %>
         <tr><td><%= d.id %></td><td><strong><%= d.title %></strong></td><td><%= d.authorName %></td><td style="font-size:11px"><%= new Date(d.issuedAt).toLocaleString('zh-TW') %></td></tr>
         <tr style="background:#f8f6f1"><td colspan="4" style="font-size:12px;color:#555;padding:8px 12px"><%= d.content %></td></tr>
@@ -193,33 +193,33 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <% if (page === 'announce') { %>
     <% if (alert) { %><div class="alert alert-<%= alert.type %>"><%= alert.text %></div><% } %>
     <div class="card">
-      <h2>發布公告</h2>
+      <h2>?澆??砍?</h2>
       <div style="background:#f8f6f1;border:1px solid #e0ddd6;border-radius:4px;padding:10px 14px;margin-bottom:14px;font-size:13px">
-        即將發布編號：<strong style="color:#0f1a2e">虛外字第 <%= nextNumber %> 號</strong>
+        ?喳??澆?蝺刻?嚗?strong style="color:#0f1a2e">??摮洵 <%= nextNumber %> ??/strong>
       </div>
       <form method="POST" action="/admin/announce/send">
         <div class="form-row">
-          <div class="form-group"><label>標題</label><input name="title" required></div>
-          <div class="form-group"><label>發布單位</label><input name="unit" placeholder="技術發展部" value="技術發展部"></div>
+          <div class="form-group"><label>璅?</label><input name="title" required></div>
+          <div class="form-group"><label>?澆??桐?</label><input name="unit" placeholder="?銵撅" value="?銵撅"></div>
         </div>
-        <div class="form-group"><label>內容</label><textarea name="content" rows="4" required></textarea></div>
-        <div class="form-group"><label>發送到</label>
+        <div class="form-group"><label>?批捆</label><textarea name="content" rows="4" required></textarea></div>
+        <div class="form-group"><label>?潮</label>
           <select name="channelId" required>
-            <option value="">-- 選擇頻道 --</option>
+            <option value="">-- ?豢??駁? --</option>
             <% for (const ch of channels) { %>
             <option value="<%= ch.id %>"><%= ch.name %></option>
             <% } %>
           </select>
         </div>
-        <button class="btn btn-gold" type="submit">📢 發布公告</button>
+        <button class="btn btn-gold" type="submit">? ?澆??砍?</button>
       </form>
     </div>
     <div class="card">
-      <h2>公告紀錄 <span class="count"><%= announcements.length %> 筆</span></h2>
-      <% if (announcements.length === 0) { %><div class="empty">尚無公告</div><% } %>
+      <h2>?砍?蝝??<span class="count"><%= announcements.length %> 蝑?/span></h2>
+      <% if (announcements.length === 0) { %><div class="empty">撠?砍?</div><% } %>
       <% if (announcements.length > 0) { %>
       <table>
-        <tr><th>編號</th><th>標題</th><th>發布者</th><th>時間</th></tr>
+        <tr><th>蝺刻?</th><th>璅?</th><th>?澆???/th><th>??</th></tr>
         <% for (const a of announcements) { %>
         <tr><td style="font-size:11px"><%= a.number %></td><td><strong><%= a.title %></strong></td><td><%= a.author %></td><td style="font-size:11px"><%= new Date(a.at).toLocaleString('zh-TW') %></td></tr>
         <% } %>
@@ -231,16 +231,16 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <!-- ===================== ECONOMY ===================== -->
     <% if (page === 'economy') { %>
     <div class="stats">
-      <div class="stat-box"><div class="num"><%= Number(treasury).toLocaleString() %></div><div class="label">國庫總額</div></div>
-      <div class="stat-box"><div class="num"><%= Number(totalSupply).toLocaleString() %></div><div class="label">總流通量</div></div>
-      <div class="stat-box"><div class="num"><%= txCount %></div><div class="label">交易筆數</div></div>
+      <div class="stat-box"><div class="num"><%= Number(treasury).toLocaleString() %></div><div class="label">?澈蝮賡?</div></div>
+      <div class="stat-box"><div class="num"><%= Number(totalSupply).toLocaleString() %></div><div class="label">蝮賣???</div></div>
+      <div class="stat-box"><div class="num"><%= txCount %></div><div class="label">鈭斗?蝑</div></div>
     </div>
     <div class="card">
-      <h2>交易紀錄</h2>
-      <% if (txs.length === 0) { %><div class="empty">尚無交易</div><% } %>
+      <h2>鈭斗?蝝??/h2>
+      <% if (txs.length === 0) { %><div class="empty">撠鈭斗?</div><% } %>
       <% if (txs.length > 0) { %>
       <table>
-        <tr><th>時間</th><th>轉出</th><th>轉入</th><th>金額</th><th>備註</th></tr>
+        <tr><th>??</th><th>頧</th><th>頧</th><th>??</th><th>?酉</th></tr>
         <% for (const t of txs) { %>
         <tr><td style="font-size:11px"><%= new Date(t.at).toLocaleString('zh-TW') %></td><td style="font-size:11px"><%= t.from %></td><td style="font-size:11px"><%= t.to %></td><td><strong><%= t.amount %></strong></td><td style="color:#8b826e"><%= t.note || '-' %></td></tr>
         <% } %>
@@ -253,27 +253,27 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <% if (page === 'diplomacy') { %>
     <% if (alert) { %><div class="alert alert-<%= alert.type %>"><%= alert.text %></div><% } %>
     <div class="card">
-      <h2>新增邦交國</h2>
+      <h2>?啣??虫漱??/h2>
       <form method="POST" action="/admin/diplomacy/add" style="display:flex;gap:8px;flex-wrap:wrap">
-        <input name="name" placeholder="國家名稱" required style="flex:2;min-width:140px">
-        <input name="date" placeholder="建交日期（選填）" style="flex:1;min-width:120px">
-        <button class="btn btn-gold" type="submit">＋ 新增</button>
+        <input name="name" placeholder="?振?迂" required style="flex:2;min-width:140px">
+        <input name="date" placeholder="撱箔漱?交?嚗憛恬?" style="flex:1;min-width:120px">
+        <button class="btn btn-gold" type="submit">嚗??啣?</button>
       </form>
     </div>
     <div class="card">
-      <h2>邦交國 <span class="count"><%= allies.length %> 國</span></h2>
-      <% if (allies.length === 0) { %><div class="empty">尚無邦交國</div><% } %>
+      <h2>?虫漱??<span class="count"><%= allies.length %> ??/span></h2>
+      <% if (allies.length === 0) { %><div class="empty">撠?虫漱??/div><% } %>
       <% if (allies.length > 0) { %>
       <table>
-        <tr><th>國家名稱</th><th>建交日期</th><th style="width:60px">操作</th></tr>
+        <tr><th>?振?迂</th><th>撱箔漱?交?</th><th style="width:60px">??</th></tr>
         <% for (const a of allies) { %>
         <tr>
           <td><strong><%= a.name %></strong></td>
           <td><%= a.date || '-' %></td>
           <td>
-            <form method="POST" action="/admin/diplomacy/remove" onsubmit="return confirm('確定移除 <%= a.name %>？')">
+            <form method="POST" action="/admin/diplomacy/remove" onsubmit="return confirm('蝣箏?蝘駁 <%= a.name %>嚗?)">
               <input type="hidden" name="name" value="<%= a.name %>">
-              <button class="btn btn-sm btn-danger" type="submit">移除</button>
+              <button class="btn btn-sm btn-danger" type="submit">蝘駁</button>
             </form>
           </td>
         </tr>
@@ -282,11 +282,11 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
       <% } %>
     </div>
     <div class="card">
-      <h2>國際組織</h2>
-      <% if (orgs.length === 0) { %><div class="empty">尚未加入國際組織</div><% } %>
+      <h2>??蝯?</h2>
+      <% if (orgs.length === 0) { %><div class="empty">撠???蝯?</div><% } %>
       <% if (orgs.length > 0) { %>
       <table>
-        <tr><th>組織名稱</th><th>加入日期</th></tr>
+        <tr><th>蝯??迂</th><th>??交?</th></tr>
         <% for (const o of orgs) { %>
         <tr><td><strong><%= o.name %></strong></td><td><%= o.joined %></td></tr>
         <% } %>
@@ -299,62 +299,81 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <% if (page === 'roles') { %>
     <% if (alert) { %><div class="alert alert-<%= alert.type %>"><%= alert.text %></div><% } %>
     <div class="card">
-      <h2>指派身分組給成員</h2>
+      <h2>?晷頨怠?蝯策?</h2>
       <form method="POST" action="/admin/roles/assign" style="display:flex;gap:8px;flex-wrap:wrap">
         <select name="roleId" required style="flex:1;min-width:140px">
-          <option value="">-- 選擇身分組 --</option>
+          <option value="">-- ?豢?頨怠?蝯?--</option>
           <% for (const r of roles) { %>
-          <option value="<%= r.id %>" style="<%= r.color ? 'color:'+r.color : '' %>"><%= r.name %>（<%= r.guild %>）</option>
+          <option value="<%= r.id %>" style="<%= r.color ? 'color:'+r.color : '' %>"><%= r.name %>嚗?%= r.guild %>嚗?/option>
           <% } %>
         </select>
-        <input name="userId" placeholder="Discord 使用者 ID" required style="flex:1;min-width:140px">
-        <button class="btn btn-gold" type="submit" name="action" value="add">＋ 新增</button>
-        <button class="btn btn-danger" type="submit" name="action" value="remove">－ 移除</button>
+        <input name="userId" placeholder="Discord 雿輻??ID" required style="flex:1;min-width:140px">
+        <button class="btn btn-gold" type="submit" name="action" value="add">嚗??啣?</button>
+        <button class="btn btn-danger" type="submit" name="action" value="remove">嚗?蝘駁</button>
       </form>
     </div>
     <div class="card">
-      <h2>所有身分組 <span class="count"><%= roles.length %> 個</span></h2>
-      <% if (roles.length === 0) { %><div class="empty">無身分組資料</div><% } %>
+      <h2>頨怠?蝯??惜蝝?<span class="count">?梢??喃???</span></h2>
+      <p style="font-size:12px;color:#8b826e;margin-bottom:10px">甈?頞??頞??ｇ??臭誑蝞∠?銝?澈????/p>
+      <% if (roles.length === 0) { %><div class="empty">?∟澈??鞈?</div><% } %>
       <% if (roles.length > 0) { %>
       <table>
-        <tr><th>ID</th><th>名稱</th><th>顏色</th><th>人數</th><th>伺服器</th></tr>
-        <% for (const r of roles) { %>
+        <tr><th style="width:40px">#</th><th>?迂</th><th>ID</th><th>憿</th><th>鈭箸</th><th>隡箸???/th></tr>
+        <% for (let i = 0; i < roles.length; i++) { %>
         <tr>
-          <td style="font-size:11px;color:#8b826e"><%= r.id %></td>
-          <td><span style="<%= r.color ? 'color:'+r.color : '' %>;font-weight:600"><%= r.name %></span></td>
-          <td><span style="display:inline-block;width:16px;height:16px;border-radius:3px;background:<%= r.color || '#999' %>;vertical-align:middle"></span></td>
-          <td><%= r.count %></td>
-          <td><%= r.guild %></td>
+          <td style="text-align:center;font-weight:700;color:<%= i < 3 ? '#c9a84c' : '#8b826e' %>"><%= i + 1 %></td>
+          <td><span style="<%= roles[i].color ? 'color:'+roles[i].color : '' %>;font-weight:600"><%= roles[i].name %></span></td>
+          <td style="font-size:11px;color:#8b826e"><%= roles[i].id %></td>
+          <td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:<%= roles[i].color || '#999' %>;vertical-align:middle"></span></td>
+          <td><%= roles[i].count %> 鈭?/td>
+          <td><%= roles[i].guild %></td>
         </tr>
         <% } %>
       </table>
       <% } %>
+    </div>
+    <div class="card">
+      <h2>蝞∠??∟澈??</h2>
+      <p style="font-size:12px;color:#8b826e;margin-bottom:10px">隞乩?頨怠?蝯??恣???箏?????/p>
+      <table>
+        <tr><th>?迂</th><th>ID</th><th>??</th></tr>
+        <% for (let i = 0; i < roles.length; i++) { %>
+        <% if (adminRoleIds.includes(roles[i].id)) { %>
+        <tr>
+          <td><span style="<%= roles[i].color ? 'color:'+roles[i].color : '' %>;font-weight:600"><%= roles[i].name %></span> 潃?/td>
+          <td style="font-size:11px;color:#8b826e"><%= roles[i].id %></td>
+          <td>#<%= i + 1 %></td>
+        </tr>
+        <% } %>
+        <% } %>
+        <% if (adminRoleIds.filter(x => x).length === 0) { %><tr><td colspan="3" style="color:#8b826e">撠閮剖?蝞∠??∟澈??</td></tr><% } %>
+      </table>
     </div>
     <% } %>
 
     <% if (page === 'autorole') { %>
     <% if (alert) { %><div class="alert alert-<%= alert.type %>"><%= alert.text %></div><% } %>
     <div class="card">
-      <h2>自動身分組設定</h2>
-      <p style="font-size:13px;color:#8b826e;margin-bottom:12px">設定後系統會自動將身分組分配給符合條件的成員。</p>
+      <h2>?芸?頨怠?蝯身摰?/h2>
+      <p style="font-size:13px;color:#8b826e;margin-bottom:12px">閮剖?敺頂蝯望??芸?撠澈????蝯衣泵??隞嗥????/p>
       <form method="POST" action="/admin/autorole/save">
-        <div class="form-group"><label>加入伺服器時自動給予</label>
+        <div class="form-group"><label>?隡箸??冽??芸?蝯虫?</label>
           <select name="joinRoleId">
-            <option value="">-- 不給予 --</option>
+            <option value="">-- 銝策鈭?--</option>
             <% for (const r of roles) { %>
-            <option value="<%= r.id %>" <%= autoRole.joinRoleId === r.id ? 'selected' : '' %>><%= r.name %>（<%= r.guild %>）</option>
+            <option value="<%= r.id %>" <%= autoRole.joinRoleId === r.id ? 'selected' : '' %>><%= r.name %>嚗?%= r.guild %>嚗?/option>
             <% } %>
           </select>
         </div>
-        <div class="form-group"><label>註冊公民時自動給予</label>
+        <div class="form-group"><label>閮餃??祆???策鈭?/label>
           <select name="citizenRoleId">
-            <option value="">-- 不給予 --</option>
+            <option value="">-- 銝策鈭?--</option>
             <% for (const r of roles) { %>
-            <option value="<%= r.id %>" <%= autoRole.citizenRoleId === r.id ? 'selected' : '' %>><%= r.name %>（<%= r.guild %>）</option>
+            <option value="<%= r.id %>" <%= autoRole.citizenRoleId === r.id ? 'selected' : '' %>><%= r.name %>嚗?%= r.guild %>嚗?/option>
             <% } %>
           </select>
         </div>
-        <button class="btn btn-gold" type="submit">💾 儲存設定</button>
+        <button class="btn btn-gold" type="submit">? ?脣?閮剖?</button>
       </form>
     </div>
     <% } %>
@@ -362,42 +381,42 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <% if (page === 'welcome') { %>
     <% if (alert) { %><div class="alert alert-<%= alert.type %>"><%= alert.text %></div><% } %>
     <div class="card">
-      <h2>歡迎訊息設定</h2>
+      <h2>甇∟?閮閮剖?</h2>
       <form method="POST" action="/admin/welcome/save">
         <div class="form-group">
           <label style="display:flex;align-items:center;gap:8px">
             <input type="checkbox" name="enabled" value="1" <%= welcome.enabled ? 'checked' : '' %> style="width:auto">
-            啟用歡迎訊息
+            ?甇∟?閮
           </label>
         </div>
-        <div class="form-group"><label>發送頻道</label>
+        <div class="form-group"><label>?潮??/label>
           <select name="channelId">
-            <option value="">-- 系統預設頻道 --</option>
+            <option value="">-- 蝟餌絞?身?駁? --</option>
             <% for (const ch of channels) { %>
             <option value="<%= ch.id %>" <%= welcome.channelId === ch.id ? 'selected' : '' %>><%= ch.name %></option>
             <% } %>
           </select>
         </div>
-        <div class="form-group"><label>自動發放身分組（新成員加入時自動獲得）</label>
+        <div class="form-group"><label>?芸??潭頨怠?蝯??唳??∪??交??芸??脣?嚗?/label>
           <select name="autoRoleId">
-            <option value="">-- 不發放 --</option>
+            <option value="">-- 銝??--</option>
             <% for (const r of allRoles) { %>
             <option value="<%= r.id %>" <%= autoRoleId === r.id ? 'selected' : '' %>><%= r.name %></option>
             <% } %>
           </select>
         </div>
-        <button class="btn btn-gold" type="submit">💾 儲存設定</button>
+        <button class="btn btn-gold" type="submit">? ?脣?閮剖?</button>
       </form>
     </div>
     <% } %>
 
     <% if (page === 'servers') { %>
     <div class="card">
-      <h2>已加入的伺服器 <span class="count"><%= guilds.length %> 個</span></h2>
-      <% if (guilds.length === 0) { %><div class="empty">尚未加入任何伺服器</div><% } %>
+      <h2>撌脣??亦?隡箸???<span class="count"><%= guilds.length %> ??/span></h2>
+      <% if (guilds.length === 0) { %><div class="empty">撠?隞颱?隡箸???/div><% } %>
       <% if (guilds.length > 0) { %>
       <table>
-        <tr><th>名稱</th><th>ID</th><th>成員數</th><th>擁有者</th></tr>
+        <tr><th>?迂</th><th>ID</th><th>???/th><th>????/th></tr>
         <% for (const g of guilds) { %>
         <tr>
           <td><strong><%= g.name %></strong></td>
@@ -416,9 +435,9 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
     <div style="display:flex;gap:12px;flex-wrap:wrap">
       <div style="flex:1;min-width:300px">
         <div class="card">
-          <h2>系統操作紀錄</h2>
+          <h2>蝟餌絞??蝝??/h2>
           <div style="background:#0f1a2e;color:#e8d5a3;padding:12px 16px;border-radius:4px;font-family:monospace;font-size:11px;max-height:400px;overflow-y:auto;line-height:1.6">
-            <% if (systemLogs.length === 0) { %><div style="color:#5a5240">尚無紀錄</div><% } %>
+            <% if (systemLogs.length === 0) { %><div style="color:#5a5240">撠蝝??/div><% } %>
             <% for (const l of systemLogs) { %>
             <div style="border-bottom:1px solid rgba(255,255,255,0.03);padding:2px 0">[<%= l.time %>] <%= l.text %></div>
             <% } %>
@@ -427,16 +446,16 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
       </div>
       <div style="flex:2;min-width:300px">
         <div class="card">
-          <h2>訊息紀錄 <span class="count">最新 <%= messages.length %> 筆</span></h2>
+          <h2>閮蝝??<span class="count">???<%= messages.length %> 蝑?/span></h2>
           <div style="background:#0f1a2e;color:#e8d5a3;padding:12px 16px;border-radius:4px;font-family:monospace;font-size:11px;max-height:500px;overflow-y:auto;line-height:1.5">
-            <% if (messages.length === 0) { %><div style="color:#5a5240">尚未有任何訊息</div><% } %>
+            <% if (messages.length === 0) { %><div style="color:#5a5240">撠?遙雿???/div><% } %>
             <% for (const m of messages) { %>
             <div style="border-bottom:1px solid rgba(255,255,255,0.03);padding:3px 0">
               [<%= new Date(m.timestamp).toLocaleString('zh-TW') %>]
               <span style="color:<%= m.type === 'delete' ? '#ef4444' : '#e8d5a3' %>"><%= m.authorTag %></span>
               <span style="color:#8b826e">#<%= m.channelName %></span>
-              <% if (m.type === 'delete') { %><span style="color:#ef4444">[已刪除]</span><% } %>
-              ：<%= (m.content || '').slice(0, 200) %>
+              <% if (m.type === 'delete') { %><span style="color:#ef4444">[撌脣?也</span><% } %>
+              嚗?%= (m.content || '').slice(0, 200) %>
             </div>
             <% } %>
           </div>
@@ -460,3 +479,4 @@ setTimeout(() => { document.querySelectorAll('.alert').forEach(el => el.style.di
 </script>
 </body>
 </html>
+
