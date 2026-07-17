@@ -242,14 +242,32 @@ textarea{resize:vertical;min-height:60px;font-family:inherit}
 
     <!-- ===================== DIPLOMACY ===================== -->
     <% if (page === 'diplomacy') { %>
+    <% if (alert) { %><div class="alert alert-<%= alert.type %>"><%= alert.text %></div><% } %>
+    <div class="card">
+      <h2>新增邦交國</h2>
+      <form method="POST" action="/admin/diplomacy/add" style="display:flex;gap:8px;flex-wrap:wrap">
+        <input name="name" placeholder="國家名稱" required style="flex:2;min-width:140px">
+        <input name="date" placeholder="建交日期（選填）" style="flex:1;min-width:120px">
+        <button class="btn btn-gold" type="submit">＋ 新增</button>
+      </form>
+    </div>
     <div class="card">
       <h2>邦交國 <span class="count"><%= allies.length %> 國</span></h2>
       <% if (allies.length === 0) { %><div class="empty">尚無邦交國</div><% } %>
       <% if (allies.length > 0) { %>
       <table>
-        <tr><th>國家名稱</th><th>建交日期</th></tr>
+        <tr><th>國家名稱</th><th>建交日期</th><th style="width:60px">操作</th></tr>
         <% for (const a of allies) { %>
-        <tr><td><strong><%= a.name %></strong></td><td><%= a.date || '-' %></td></tr>
+        <tr>
+          <td><strong><%= a.name %></strong></td>
+          <td><%= a.date || '-' %></td>
+          <td>
+            <form method="POST" action="/admin/diplomacy/remove" onsubmit="return confirm('確定移除 <%= a.name %>？')">
+              <input type="hidden" name="name" value="<%= a.name %>">
+              <button class="btn btn-sm btn-danger" type="submit">移除</button>
+            </form>
+          </td>
+        </tr>
         <% } %>
       </table>
       <% } %>

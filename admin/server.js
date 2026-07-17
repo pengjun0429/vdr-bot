@@ -191,7 +191,42 @@ function startAdmin(client) {
     res.render('admin', { ...baseData(), page: 'diplomacy', pageTitle: '外交邦交',
       allies: db.allies,
       orgs: db.organizations,
+      alert: req.session.alert || null,
     });
+    req.session.alert = null;
+  });
+
+  app.post('/admin/diplomacy/add', requireAuth, (req, res) => {
+    const vdr = getVdr();
+    const db = vdr.get();
+    const { name, date } = req.body;
+    if (!name) {
+      req.session.alert = { type: 'error', text: '請填寫國家名稱' };
+      return res.redirect('/admin/diplomacy');
+    }
+    if (db.allies.find(a => a.name === name)) {
+      req.session.alert = { type: 'error', text: '該國家已在邦交列表中' };
+      return res.redirect('/admin/diplomacy');
+    }
+    db.allies.push({ name, date: date || new Date().toLocaleDateString('zh-TW') });
+    vdr.save();
+    req.session.alert = { type: 'success', text: `已新增邦交國：${name}` };
+    res.redirect('/admin/diplomacy');
+  });
+
+  app.post('/admin/diplomacy/remove', requireAuth, (req, res) => {
+    const vdr = getVdr();
+    const db = vdr.get();
+    const { name } = req.body;
+    const idx = db.allies.findIndex(a => a.name === name);
+    if (idx === -1) {
+      req.session.alert = { type: 'error', text: '找不到該國家' };
+      return res.redirect('/admin/diplomacy');
+    }
+    db.allies.splice(idx, 1);
+    vdr.save();
+    req.session.alert = { type: 'success', text: `已移除邦交國：${name}` };
+    res.redirect('/admin/diplomacy');
   });
 
   app.get('/admin/servers', requireAuth, (req, res) => {
