@@ -364,6 +364,39 @@ function startAdmin(client) {
     res.redirect('/admin/autorole');
   });
 
+  app.get('/admin/roleorder', requireAuth, (req, res) => {
+    const order = [];
+    try {
+      const f = require('path').join(__dirname, '..', 'data', 'role-order.json');
+      if (require('fs').existsSync(f)) order.push(...JSON.parse(require('fs').readFileSync(f, 'utf-8')));
+    } catch {}
+    const roles = [];
+    for (const g of client.guilds.cache.values()) {
+      for (const r of g.roles.cache.sort((a, b) => b.position - a.position).values()) {
+        if (r.name === '@everyone') continue;
+        roles.push({ id: r.id, name: r.name, guild: g.name });
+      }
+    }
+    res.render('admin', { ...baseData(), page: 'roleorder', pageTitle: '身分組排序', roles, order, user: req.session.user, alert: req.session.alert || null });
+    req.session.alert = null;
+  });
+
+  app.post('/admin/roleorder/save', requireAuth, (req, res) => {
+    const ids = req.body.roleIds;
+    if (!Array.isArray(ids)) {
+      req.session.alert = { type: 'error', text: '請選擇身分組' };
+      return res.redirect('/admin/roleorder');
+    }
+    const order = ids.map((id, i) => {
+      const name = '';
+      const group = req.body.group ? (req.body.group[id] || '') : '';
+      return { id, name, group };
+    });
+    require('fs').writeFileSync(require('path').join(__dirname, '..', 'data', 'role-order.json'), JSON.stringify(order, null, 2), 'utf-8');
+    req.session.alert = { type: 'success', text: '排序順序已儲存' };
+    res.redirect('/admin/roleorder');
+  });
+
   app.get('/admin/airoles', requireAuth, (req, res) => {
     const vdr = require('../src/services/vdr-data');
     const db = vdr.get();
