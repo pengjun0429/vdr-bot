@@ -395,6 +395,18 @@ function startAdmin(client) {
     });
   });
 
+  app.get('/debug-oauth', (req, res) => {
+    res.json({
+      clientId: config.discord.clientId,
+      hasSecret: !!config.discord.clientSecret,
+      secretLength: (config.discord.clientSecret || '').length,
+      redirectUri: (req.headers['x-forwarded-proto'] || req.protocol) + '://' + req.get('host') + '/auth/callback',
+      host: req.get('host'),
+      proto: req.protocol,
+      forwardedProto: req.headers['x-forwarded-proto'],
+    });
+  });
+
   app.listen(PORT, () => {
     logger.info(`管理後臺已啟動: http://localhost:${PORT}`);
   });
