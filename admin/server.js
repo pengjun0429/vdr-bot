@@ -106,8 +106,15 @@ function startAdmin(client) {
   app.get('/admin/announce', requireAuth, (req, res) => {
     const vdr = getVdr();
     const db = vdr.get();
+    const channels = [];
+    for (const g of client.guilds.cache.values()) {
+      for (const c of g.channels.cache.values()) {
+        if (c.type === 0) channels.push({ id: c.id, name: `#${c.name}（${g.name}）` });
+      }
+    }
     res.render('admin', { ...baseData(), page: 'announce', pageTitle: '國家公告',
       announcements: [...(db.announcements || [])].reverse(),
+      channels,
       alert: req.session.alert || null,
     });
     req.session.alert = null;
@@ -116,13 +123,17 @@ function startAdmin(client) {
   app.post('/admin/announce/send', requireAuth, (req, res) => {
     const vdr = getVdr();
     const db = vdr.get();
-    const { title, content } = req.body;
+    const { title, content, channelId } = req.body;
+    if (!channelId) {
+      req.session.alert = { type: 'error', text: '請選擇發送頻道' };
+      return res.redirect('/admin/announce');
+    }
     const num = vdr.nextAnnounceNumber();
     vdr.addAnnouncement(num, title, content, '管理員');
     const msg = `**【𝐕𝐃𝐑國家發展公告】**\n\n條約編號：虛外字第 ${num} 號\n＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n\n${content}\n\n＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n發布者：管理員\n發布單位：技術發展部\n公告單位：虛境民主共和國總統府`;
-    const channel = client.channels.cache.find(c => c.type === 0);
-    if (channel) channel.send(msg);
-    req.session.alert = { type: 'success', text: `公告 ${num} 已發布` };
+    const channel = client.channels.cache.get(channelId);
+    if (channel) channel.send(msg).catch(() => {});
+    req.session.alert = { type: 'success', text: `公告 ${num} 已發布至 #${channel?.name || '未知頻道'}` };
     res.redirect('/admin/announce');
   });
 
