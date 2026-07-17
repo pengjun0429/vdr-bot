@@ -35,7 +35,8 @@ function startAdmin(client) {
   app.get('/login', (req, res) => {
     if (req.session.authenticated) return res.redirect('/dashboard');
     if (useDiscordAuth) {
-      const url = `${DISCORD_API}/oauth2/authorize?client_id=${config.discord.clientId}&redirect_uri=${encodeURIComponent(config.discord.redirectUri)}&response_type=code&scope=identify+guilds&prompt=none`;
+      const redirectUri = config.discord.redirectUri || (req.protocol + '://' + req.get('host') + '/auth/callback');
+      const url = `${DISCORD_API}/oauth2/authorize?client_id=${config.discord.clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify+guilds`;
       return res.render('login', { error: null, discordUrl: url, useDiscord: true });
     }
     res.render('login', { error: null, discordUrl: '#', useDiscord: false });
