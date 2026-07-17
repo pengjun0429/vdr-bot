@@ -176,7 +176,7 @@ function startAdmin(client) {
     const channels = [];
     for (const g of client.guilds.cache.values()) {
       for (const c of g.channels.cache.values()) {
-        if (c.type === 0) channels.push({ id: c.id, name: `#${c.name}（${g.name}）` });
+        if (c.type === 0 || c.type === 5) channels.push({ id: c.id, name: `#${c.name}（${g.name}）` });
       }
     }
     res.render('admin', { ...baseData(), page: 'decrees', pageTitle: '總統令',
@@ -218,7 +218,7 @@ function startAdmin(client) {
     const channels = [];
     for (const g of client.guilds.cache.values()) {
       for (const c of g.channels.cache.values()) {
-        if (c.type === 0) channels.push({ id: c.id, name: `#${c.name}（${g.name}）` });
+        if (c.type === 0 || c.type === 5) channels.push({ id: c.id, name: `#${c.name}（${g.name}）` });
       }
     }
     const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
@@ -426,7 +426,7 @@ function startAdmin(client) {
     const channels = [];
     for (const g of client.guilds.cache.values()) {
       for (const c of g.channels.cache.values()) {
-        if (c.type === 0) channels.push({ id: c.id, name: `#${c.name}（${g.name}）` });
+        if (c.type === 0 || c.type === 5) channels.push({ id: c.id, name: `#${c.name}（${g.name}）` });
       }
     }
     res.render('admin', { ...baseData(), page: 'welcome', pageTitle: '歡迎/離開設定', user: req.session.user,
@@ -499,7 +499,7 @@ function startAdmin(client) {
     const channels = [];
     for (const g of client.guilds.cache.values()) {
       for (const ch of g.channels.cache.values()) {
-        if (ch.type === 0) channels.push({ id: ch.id, name: ch.name + ' (' + g.name + ')' });
+        if (ch.type === 0 || ch.type === 5) channels.push({ id: ch.id, name: ch.name + ' (' + g.name + ')' });
       }
     }
     res.render('admin', { ...baseData(), page: 'say', pageTitle: '機器人發言', channels, user: req.session.user, alert: req.session.alert || null });
