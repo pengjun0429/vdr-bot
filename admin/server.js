@@ -86,12 +86,15 @@ function startAdmin(client) {
         citizens: Object.keys(db.citizens).length,
         allies: db.allies.length,
         decrees: db.decrees.length,
+        announcements: (db.announcements || []).length,
         treasury: db.economy.treasury,
+        totalSupply: db.economy.totalSupply,
         txCount: db.economy.transactions.length,
         regions: Object.keys(db.regions).length,
       },
       citizens: Object.entries(db.citizens).map(([id, c]) => ({ id, ...c })),
       decrees: [...db.decrees].reverse(),
+      announcements: [...(db.announcements || [])].reverse(),
       txs: [...db.economy.transactions].reverse().slice(0, 50),
     });
   });

@@ -3,106 +3,231 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VDR 國家管理後臺</title>
+<title>VDR 國家資料儀表板</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: system-ui, -apple-system, sans-serif; background: #f4f2ed; color: #1e1e2a; }
-  .header { background: #0f1a2e; color: #e8d5a3; padding: 30px 24px; text-align: center; }
-  .header h1 { color: #fff; font-size: 1.5rem; }
-  .header .sub { opacity: 0.6; font-size: 0.85rem; margin-top: 4px; }
-  .container { max-width: 1000px; margin: 0 auto; padding: 24px 16px; }
-  .card { background: #fff; border-radius: 6px; padding: 20px 24px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-  .card h2 { font-size: 1.1rem; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid #dcc89a; color: #0f1a2e; }
-  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
-  .stat-box { background: #f8f6f1; border-radius: 4px; padding: 14px; text-align: center; }
-  .stat-box .num { font-size: 1.5rem; font-weight: 700; color: #0f1a2e; }
-  .stat-box .label { font-size: 0.8rem; color: #888; margin-top: 2px; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-  th, td { border: 1px solid #e0ddd6; padding: 6px 10px; text-align: left; }
-  th { background: #0f1a2e; color: #fff; font-weight: 600; }
-  tr:nth-child(even) td { background: #faf9f6; }
-  .badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 0.75rem; background: #dcc89a; color: #0f1a2e; }
-  @media (max-width: 540px) {
-    .card { padding: 14px; }
-    .stat-grid { grid-template-columns: 1fr 1fr; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,'Noto Sans TC',sans-serif; background:#f4f2ed; color:#1e1e2a; }
+  .nav { display:flex;justify-content:space-between;align-items:center;padding:12px 32px;background:#0f1a2e;border-bottom:1px solid rgba(255,255,255,0.05); }
+  .nav .logo { font-size:15px;font-weight:700;color:#e8d5a3;text-decoration:none; }
+  .nav .right { display:flex;align-items:center;gap:14px; }
+  .nav .right a { color:#8b826e;text-decoration:none;font-size:13px; }
+  .nav .right a:hover { color:#e8d5a3; }
+  .container { max-width:1000px;margin:0 auto;padding:24px 16px 40px; }
+
+  .tabs { display:flex;gap:4px;margin-bottom:20px;flex-wrap:wrap; }
+  .tabs button { padding:8px 18px;border:1px solid #e0ddd6;background:#fff;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;color:#1e1e2a;transition:0.15s; }
+  .tabs button:hover { border-color:#c9a84c; }
+  .tabs button.active { background:#0f1a2e;color:#e8d5a3;border-color:#0f1a2e; }
+
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+
+  .card { background:#fff;border-radius:6px;padding:20px 24px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,0.04);border:1px solid #e0ddd6; }
+  .card h2 { font-size:15px;font-weight:600;color:#0f1a2e;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #dcc89a; }
+
+  .stat-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px; }
+  .stat-box { background:#f8f6f1;border-radius:6px;padding:14px;text-align:center;border:1px solid #e0ddd6; }
+  .stat-box .num { font-size:22px;font-weight:700;color:#0f1a2e; }
+  .stat-box .label { font-size:10px;color:#8b826e;margin-top:2px;text-transform:uppercase;letter-spacing:0.5px; }
+
+  table { width:100%;border-collapse:collapse;font-size:13px;margin-top:8px; }
+  th,td { border:1px solid #e0ddd6;padding:6px 10px;text-align:left; }
+  th { background:#0f1a2e;color:#fff;font-weight:600;font-size:12px;white-space:nowrap; }
+  tr:nth-child(even) td { background:#faf9f6; }
+  .badge { display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;background:#dcc89a;color:#0f1a2e; }
+  .empty { color:#8b826e;padding:20px;text-align:center;font-size:13px; }
+
+  .search-box { margin-bottom:12px; }
+  .search-box input { width:100%;padding:8px 12px;border:1px solid #e0ddd6;border-radius:4px;font-size:13px;outline:none; }
+  .search-box input:focus { border-color:#c9a84c; }
+
+  .log-box { background:#0f1a2e;color:#e8d5a3;padding:12px 16px;border-radius:4px;font-family:monospace;font-size:12px;max-height:300px;overflow-y:auto;line-height:1.6; }
+  .log-box div { border-bottom:1px solid rgba(255,255,255,0.03);padding:2px 0; }
+
+  .btn { display:inline-block;padding:6px 14px;border-radius:4px;font-size:12px;font-weight:600;text-decoration:none;border:none;cursor:pointer; }
+  .btn-gold { background:#c9a84c;color:#0f1a2e; }
+  .btn-gold:hover { background:#dcc060; }
+
+  @media (max-width:540px) {
+    .stat-grid { grid-template-columns:1fr 1fr; }
+    .nav { padding:10px 16px; }
+    .card { padding:14px 16px; }
+    th,td { font-size:11px;padding:4px 6px; }
   }
 </style>
 </head>
 <body>
-<div class="header">
-  <h1>虛境民主共和國 — 國家管理後臺</h1>
-  <div class="sub">技術發展部管理介面</div>
-</div>
-<div class="container">
-
-  <div class="card">
-    <h2>國家概覽</h2>
-    <div class="stat-grid">
-      <div class="stat-box"><div class="num"><%= nation.citizens %></div><div class="label">公民人數</div></div>
-      <div class="stat-box"><div class="num"><%= nation.allies %></div><div class="label">邦交國</div></div>
-      <div class="stat-box"><div class="num"><%= nation.decrees %></div><div class="label">總統令</div></div>
-      <div class="stat-box"><div class="num"><%= nation.treasury %></div><div class="label">國庫（尐尐幣）</div></div>
-      <div class="stat-box"><div class="num"><%= nation.txCount %></div><div class="label">交易筆數</div></div>
-      <div class="stat-box"><div class="num"><%= nation.regions %></div><div class="label">行政區</div></div>
+  <div class="nav">
+    <a href="/dashboard" class="logo">虛境民主共和國 ｜ 國家資料儀表板</a>
+    <div class="right">
+      <a href="/dashboard">← 回控制臺</a>
+      <a href="/logout">登出</a>
     </div>
   </div>
 
-  <div class="card">
-    <h2>公民列表</h2>
-    <% if (citizens.length === 0) { %><p style="color:#888">尚無註冊公民</p><% } %>
-    <% if (citizens.length > 0) { %>
-    <table>
-      <tr><th>Discord ID</th><th>姓名</th><th>行政區</th><th>錢包</th><th>註冊時間</th></tr>
-      <% for (const c of citizens) { %>
-      <tr>
-        <td><code><%= c.id %></code></td>
-        <td><%= c.name %></td>
-        <td><span class="badge"><%= c.region %></span></td>
-        <td><%= c.wallet %></td>
-        <td><%= new Date(c.registeredAt).toLocaleString('zh-TW') %></td>
-      </tr>
-      <% } %>
-    </table>
-    <% } %>
+  <div class="container">
+    <div class="tabs">
+      <button class="active" onclick="switchTab('overview')">總覽</button>
+      <button onclick="switchTab('citizens')">公民管理</button>
+      <button onclick="switchTab('decrees')">總統令</button>
+      <button onclick="switchTab('announcements')">國家公告</button>
+      <button onclick="switchTab('economy')">經濟</button>
+      <button onclick="switchTab('logs')">系統日誌</button>
+    </div>
+
+    <!-- 總覽 -->
+    <div id="tab-overview" class="tab-content active">
+      <div class="card">
+        <h2>國家概覽</h2>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="num"><%= nation.citizens %></div><div class="label">公民</div></div>
+          <div class="stat-box"><div class="num"><%= nation.allies %></div><div class="label">邦交國</div></div>
+          <div class="stat-box"><div class="num"><%= nation.decrees %></div><div class="label">總統令</div></div>
+          <div class="stat-box"><div class="num"><%= nation.announcements %></div><div class="label">公告</div></div>
+          <div class="stat-box"><div class="num"><%= Number(nation.treasury).toLocaleString() %></div><div class="label">國庫</div></div>
+          <div class="stat-box"><div class="num"><%= nation.txCount %></div><div class="label">交易</div></div>
+          <div class="stat-box"><div class="num"><%= nation.regions %></div><div class="label">行政區</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 公民管理 -->
+    <div id="tab-citizens" class="tab-content">
+      <div class="card">
+        <h2>公民列表</h2>
+        <div class="search-box">
+          <input type="text" id="citizenSearch" placeholder="搜尋公民名稱..." oninput="filterTable('citizenTable', this.value)">
+        </div>
+        <% if (citizens.length === 0) { %><div class="empty">尚無註冊公民</div><% } %>
+        <% if (citizens.length > 0) { %>
+        <table id="citizenTable">
+          <tr><th>Discord ID</th><th>姓名</th><th>行政區</th><th>錢包</th><th>註冊時間</th></tr>
+          <% for (const c of citizens) { %>
+          <tr>
+            <td style="font-size:11px;color:#8b826e"><%= c.id %></td>
+            <td><strong><%= c.name %></strong></td>
+            <td><span class="badge"><%= c.region %></span></td>
+            <td><%= c.wallet %> 幣</td>
+            <td style="font-size:11px"><%= new Date(c.registeredAt).toLocaleString('zh-TW') %></td>
+          </tr>
+          <% } %>
+        </table>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- 總統令 -->
+    <div id="tab-decrees" class="tab-content">
+      <div class="card">
+        <h2>總統令列表</h2>
+        <% if (decrees.length === 0) { %><div class="empty">尚無總統令</div><% } %>
+        <% if (decrees.length > 0) { %>
+        <table>
+          <tr><th>#</th><th>標題</th><th>發布者</th><th>時間</th></tr>
+          <% for (const d of decrees) { %>
+          <tr>
+            <td><%= d.id %></td>
+            <td><strong><%= d.title %></strong></td>
+            <td style="font-size:12px"><%= d.authorName %></td>
+            <td style="font-size:11px"><%= new Date(d.issuedAt).toLocaleString('zh-TW') %></td>
+          </tr>
+          <tr style="background:#f8f6f1">
+            <td colspan="4" style="font-size:12px;color:#555"><%= d.content %></td>
+          </tr>
+          <% } %>
+        </table>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- 國家公告 -->
+    <div id="tab-announcements" class="tab-content">
+      <div class="card">
+        <h2>國家公告紀錄</h2>
+        <% if (announcements.length === 0) { %><div class="empty">尚無公告</div><% } %>
+        <% if (announcements.length > 0) { %>
+        <table>
+          <tr><th>編號</th><th>標題</th><th>發布者</th><th>時間</th></tr>
+          <% for (const a of announcements) { %>
+          <tr>
+            <td style="font-size:11px"><%= a.number %></td>
+            <td><strong><%= a.title %></strong></td>
+            <td><%= a.author %></td>
+            <td style="font-size:11px"><%= new Date(a.at).toLocaleString('zh-TW') %></td>
+          </tr>
+          <% } %>
+        </table>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- 經濟 -->
+    <div id="tab-economy" class="tab-content">
+      <div class="card">
+        <h2>經濟概況</h2>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="num"><%= Number(nation.treasury).toLocaleString() %></div><div class="label">國庫</div></div>
+          <div class="stat-box"><div class="num"><%= nation.txCount %></div><div class="label">交易筆數</div></div>
+          <div class="stat-box"><div class="num"><%= Number(nation.totalSupply).toLocaleString() %></div><div class="label">總流通量</div></div>
+          <div class="stat-box"><div class="num"><%= nation.citizens %></div><div class="label">總公民數</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>交易紀錄</h2>
+        <% if (txs.length === 0) { %><div class="empty">尚無交易</div><% } %>
+        <% if (txs.length > 0) { %>
+        <table>
+          <tr><th>時間</th><th>轉出</th><th>轉入</th><th>金額</th><th>備註</th></tr>
+          <% for (const t of txs) { %>
+          <tr>
+            <td style="font-size:11px"><%= new Date(t.at).toLocaleString('zh-TW') %></td>
+            <td style="font-size:11px"><%= t.from %></td>
+            <td style="font-size:11px"><%= t.to %></td>
+            <td><strong><%= t.amount %></strong></td>
+            <td style="font-size:12px;color:#8b826e"><%= t.note || '-' %></td>
+          </tr>
+          <% } %>
+        </table>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- 系統日誌 -->
+    <div id="tab-logs" class="tab-content">
+      <div class="card">
+        <h2>最近操作紀錄</h2>
+        <div class="log-box">
+          <div>📌 系統已啟動</div>
+          <% for (const d of decrees.slice(0,5)) { %>
+          <div>📜 總統令 #<%= d.id %>：<%= d.title %>（<%= d.authorName %>）</div>
+          <% } %>
+          <% for (const a of announcements.slice(0,5)) { %>
+          <div>📢 公告 <%= a.number %>：<%= a.title %>（<%= a.author %>）</div>
+          <% } %>
+          <% for (const t of txs.slice(0,5)) { %>
+          <div>💰 轉帳 <%= t.amount %> 幣：<%= t.from %> → <%= t.to %></div>
+          <% } %>
+          <% if (decrees.length === 0 && announcements.length === 0 && txs.length === 0) { %>
+          <div>尚未有任何操作紀錄</div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <div class="card">
-    <h2>總統令列表</h2>
-    <% if (decrees.length === 0) { %><p style="color:#888">尚無總統令</p><% } %>
-    <% if (decrees.length > 0) { %>
-    <table>
-      <tr><th>編號</th><th>標題</th><th>發布者</th><th>時間</th></tr>
-      <% for (const d of decrees) { %>
-      <tr>
-        <td>#<%= d.id %></td>
-        <td><%= d.title %></td>
-        <td><%= d.authorName %></td>
-        <td><%= new Date(d.issuedAt).toLocaleString('zh-TW') %></td>
-      </tr>
-      <% } %>
-    </table>
-    <% } %>
-  </div>
-
-  <div class="card">
-    <h2>交易紀錄</h2>
-    <% if (txs.length === 0) { %><p style="color:#888">尚無交易</p><% } %>
-    <% if (txs.length > 0) { %>
-    <table>
-      <tr><th>時間</th><th>轉出</th><th>轉入</th><th>金額</th><th>備註</th></tr>
-      <% for (const t of txs) { %>
-      <tr>
-        <td><%= new Date(t.at).toLocaleString('zh-TW') %></td>
-        <td><code><%= t.from %></code></td>
-        <td><code><%= t.to %></code></td>
-        <td><%= t.amount %></td>
-        <td><%= t.note || '-' %></td>
-      </tr>
-      <% } %>
-    </table>
-    <% } %>
-  </div>
-
-</div>
+  <script>
+  function switchTab(name) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tabs button').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+  }
+  function filterTable(tableId, val) {
+    const rows = document.getElementById(tableId).querySelectorAll('tr:not(:first-child)');
+    const lower = val.toLowerCase();
+    rows.forEach(r => { r.style.display = r.textContent.toLowerCase().includes(lower) ? '' : 'none'; });
+  }
+  </script>
 </body>
 </html>
